@@ -5,12 +5,58 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+    <title>Grafkom</title>
 </head>
 
 <body>
-    <h1>WebGL</h1>
-    <canvas id="canvas" width="500" height="500"></canvas>
+    <div id="helpmodal" class="modal">
+        <div class="modal-content">
+          <span class="modal-close">&times;</span>
+ 
+            
+        </div>
+      </div>
+    <div class="container">
+        <div class="baris">
+            <div class="kolom">
+                <select id="bentuk">
+                    <option value="persegipanjang">PersegiPanjang</option>
+                    <option value="garis">Garis</option>
+                    <option value="persegi">Persegi</option>
+                    <option value="poligon">Poligon</option>
+                </select>
+                <input type="number" value="5" min="3" max="100" id="sisi" hidden />
+                <input type="color" id="warna" value="#000000">
+                <input type="checkbox" id="fill" text="fill">
+                <label>Fill</label>
+                <button id="pop">Pop</button>
+                <button id="clear">Clear</button>
+                <button id="help">Help</button>
+            </div>
+        </div>
+        <div class="baris">
+            <div class="kolom">
+                <button id="changecolor">Change color: <span>OFF</span></button>
+                <button id="resize">Resize Mode: <span>OFF</span></button>
+            </div>
+        </div>
+        <div class="baris">
+            <div class="kolom">
+                <canvas id="canvas" width="500" height="500"></canvas>
+            </div>
+        </div>
+        <div class="baris">
+            <div class="kolom">
+                Current file: <span id="current_file">-</span>
+            </div>
+            <div class="kolom">
+                <button id="load">Load</button>
+                <input id="loadfile" type="file" hidden />
+                <button id="save">Save</button>
+            </div>
+        </div>
+    </div>
     <script src="./enums.js" ></script>
     <script src="./globals.js" ></script>
     <script src="./models.js" ></script>

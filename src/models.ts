@@ -1,5 +1,7 @@
 // import globalVars from "./globals";
 
+// import { arrayBuffer } from "stream/consumers";
+
 class Color {
   protected r: number;
   protected g: number;
@@ -36,8 +38,8 @@ class Color {
 class Vertex {
   protected static counter: number = 0;
 
-  protected x: number;
-  protected y: number;
+  public x: number;
+  public y: number;
   protected c: Color;
   protected id: number;
   protected gl: WebGLRenderingContext;
@@ -72,15 +74,21 @@ class Shape2D {
       .map((v) => {
         return v.toArray();
       })
-      .flat();
-    console.log(flatVertices);
+      
+      let temp = [];
+      for(let i = 0; i < flatVertices.length; i++){
+        temp.push(flatVertices[i][0])
+        temp.push(flatVertices[i][1])
+      }
+
+      const array = new Float32Array(temp);
 
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER,
-      new Float32Array(flatVertices),
+      array,
       this.gl.STATIC_DRAW
     );
-    
+
     this.gl.drawArrays(glShape, 0, this.vertices.length);
   }
 
@@ -98,8 +106,71 @@ class Square extends Shape2D {
   }
 
   draw() {
-    this.materialize(this.gl.TRIANGLE_FAN);
+    this.materialize(this.gl.LINE_LOOP);
   }
+}
+
+class Line extends Shape2D {
+  constructor(vertices: Vertex[], gl: WebGLRenderingContext) {
+    if (vertices.length !== 2) {
+      throw new Error("A line must have 1 vertices.");
+    }
+    super(vertices, gl);
+  }
+
+  draw() {
+    this.materialize(this.gl.LINES);
+  }
+}
+
+class Polygon extends Shape2D {
+  constructor(vertices: Vertex[], gl: WebGLRenderingContext) {
+    if (vertices.length < 3) {
+      throw new Error("A polygon must have more than 3 vertices.");
+    }
+    super(vertices, gl);
+  }
+
+  draw() {
+    this.materialize(this.gl.LINE_LOOP);
+  }
+
+  orientation(p:Vertex, q:Vertex, r:Vertex)
+    {
+      let nilai = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+      if (nilai == 0) {
+        return 0;
+      } else {
+        return (nilai > 0)? 1: 2; 
+      }
+    }
+  
+    convexHull() {
+      if (this.vertices.length < 3) {
+        return;
+      }
+      
+      let hull = [];
+      let l = 0;
+
+      for (let i = 1; i < this.vertices.length; i++) {
+        if (this.vertices[i].x < this.vertices[l].x) {
+          l = i;
+        }
+      }
+      let p = l, q;
+      do {
+        hull.push(this.vertices[p]);
+        q = (p + 1) % this.vertices.length;
+        for (let i = 0; i < this.vertices.length; i++) {
+          if (this.orientation(this.vertices[p], this.vertices[i], this.vertices[q]) == 2) {
+            q = i;
+          }
+        }
+        p = q;
+      } while (p != l); 
+       this.vertices = hull;
+    }
 }
 
 // export {
