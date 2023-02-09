@@ -70,24 +70,19 @@ class Shape2D {
   }
 
   protected materialize(glShape: number): void {
-    const flatVertices = this.vertices
-      .map((v) => {
-        return v.toArray();
-      })
-      
-      let temp = [];
-      for(let i = 0; i < flatVertices.length; i++){
-        temp.push(flatVertices[i][0])
-        temp.push(flatVertices[i][1])
-      }
+    const flatVertices = this.vertices.map((v) => {
+      return v.toArray();
+    });
 
-      const array = new Float32Array(temp);
+    let temp = [];
+    for (let i = 0; i < flatVertices.length; i++) {
+      temp.push(flatVertices[i][0]);
+      temp.push(flatVertices[i][1]);
+    }
 
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER,
-      array,
-      this.gl.STATIC_DRAW
-    );
+    const array = new Float32Array(temp);
+
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, array, this.gl.STATIC_DRAW);
 
     this.gl.drawArrays(glShape, 0, this.vertices.length);
   }
@@ -135,42 +130,62 @@ class Polygon extends Shape2D {
     this.materialize(this.gl.LINE_LOOP);
   }
 
-  orientation(p:Vertex, q:Vertex, r:Vertex)
-    {
-      let nilai = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-      if (nilai == 0) {
-        return 0;
-      } else {
-        return (nilai > 0)? 1: 2; 
-      }
+  orientation(p: Vertex, q: Vertex, r: Vertex) {
+    let nilai = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+    if (nilai == 0) {
+      return 0;
+    } else {
+      return nilai > 0 ? 1 : 2;
     }
-  
-    convexHull() {
-      if (this.vertices.length < 3) {
-        return;
-      }
-      
-      let hull = [];
-      let l = 0;
+  }
 
-      for (let i = 1; i < this.vertices.length; i++) {
-        if (this.vertices[i].x < this.vertices[l].x) {
-          l = i;
+  convexHull() {
+    if (this.vertices.length < 3) {
+      return;
+    }
+
+    let hull = [];
+    let l = 0;
+
+    for (let i = 1; i < this.vertices.length; i++) {
+      if (this.vertices[i].x < this.vertices[l].x) {
+        l = i;
+      }
+    }
+    let p = l,
+      q;
+    do {
+      hull.push(this.vertices[p]);
+      q = (p + 1) % this.vertices.length;
+      for (let i = 0; i < this.vertices.length; i++) {
+        if (this.orientation(this.vertices[p], this.vertices[i], this.vertices[q]) == 2) {
+          q = i;
         }
       }
-      let p = l, q;
-      do {
-        hull.push(this.vertices[p]);
-        q = (p + 1) % this.vertices.length;
-        for (let i = 0; i < this.vertices.length; i++) {
-          if (this.orientation(this.vertices[p], this.vertices[i], this.vertices[q]) == 2) {
-            q = i;
-          }
-        }
-        p = q;
-      } while (p != l); 
-       this.vertices = hull;
+      p = q;
+    } while (p != l);
+    this.vertices = hull;
+  }
+}
+
+class Circle extends Shape2D {
+  constructor(x: number, y: number, gl: WebGLRenderingContext) {
+    var vertexlingkaran: Vertex[] = [];
+    let steps = 10;
+    let rad = 0.02;
+    let numberOfVertices = steps;
+    let doublePI = 2 * Math.PI;
+
+    for (var i = 0; i < numberOfVertices; i++) {
+      var vertex = new Vertex(x + rad * Math.cos((i * doublePI) / steps), y + rad * Math.sin((i * doublePI) / steps), new Color(20, 20, 20), gl);
+      vertexlingkaran.push(vertex);
     }
+    super(vertexlingkaran, gl);
+  }
+
+  draw() {
+    this.materialize(this.gl.TRIANGLE_FAN);
+  }
 }
 
 // export {

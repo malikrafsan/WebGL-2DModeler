@@ -22,6 +22,10 @@ let n_sisi = 1; // Untuk memastikan bahwa pengguna mengklik setidaknya 3 kali un
 let is_clicked = false; // Untuk mengetahui apakah pengguna sedang mengklik suatu bangunan atau tidak
 let id_clicked = -1; // Untuk mengetahui id bangunan yang sedang diklik
 let saver_tranformation_shape: Shape2D | undefined = undefined; // Untuk menyimpan sementara bangunan yang sedang dilakukan translasi atau dilatasi
+let clicked_corner = false; // untuk mengetahui jika pengguna mengklik salah satu sudut dari sebuah bangunan
+let select_mode = false; // untuk mengetahui apakah pengguna sedang melakukan select mode atau tidak
+let selected: Shape2D; // untuk menyimpan shape yang dipilih sudutnya
+let counter = 0; // untuk menghilangkan titik pada shape yang diselect
 
 let x_awal = -1; // Kondisi awal sumbu x dimana pengguna mengklik mouse
 let y_awal = -1; // Kondisi awal sumbu y dimana pengguna mengklik mouse
@@ -33,6 +37,7 @@ const main = () => {
   const pop_button = document.querySelector("#pop");
   const type_button = <HTMLInputElement>document.querySelector("#bentuk");
   const ul_data = document.querySelector("#card");
+  const select_button = document.querySelector("#select");
 
   if (!(canvas instanceof HTMLCanvasElement)) {
     throw new Error("No html canvas element.");
@@ -46,6 +51,9 @@ const main = () => {
     throw new Error("No html button element.");
   }
 
+  if (!(select_button instanceof HTMLButtonElement)) {
+    throw new Error("No html button element.");
+  }
   // WebGL rendering context
   const gl = canvas.getContext("webgl");
 
@@ -155,6 +163,12 @@ const main = () => {
     displayData();
   });
 
+  // Melakukan hold untuk button select
+  select_button.addEventListener("click", function (e) {
+    select_button?.classList.toggle("active");
+    select_mode = !select_mode;
+  });
+
   // Fungsi untuk melakukan render ulang data yang hendak ditampilkan pada kiri canvas
   function displayData() {
     const list = document.createDocumentFragment();
@@ -190,7 +204,18 @@ const main = () => {
   // Koordinat awal x dan y, koordinat akhir x dan y, gl, serta boolean apakah itu adalah bangunan baru atau hanya temp bangunan
   function createShape(x_awal: number, y_awal: number, x: number, y: number, gl: WebGLRenderingContext, isNewShape: boolean) {
     let type = (<HTMLInputElement>document.getElementById("bentuk"))?.value;
-    if (type === "persegipanjang") {
+    if (select_mode) {
+      if (clicked_corner === true) {
+        // find vertex yang paling deket dengan x_awal dan y_awal yang diassign. Lalu kembalikan indexnya.
+        let idx_update_shape = shape.indexOf(selected);
+        let idx_update_vertex = findNearestVertex(x_awal, y_awal, shape[idx_update_shape]);
+        shape[idx_update_shape].vertices[idx_update_vertex].x = x;
+        shape[idx_update_shape].vertices[idx_update_vertex].y = y;
+        // find vertex yang paling deket dengan x_awal dan y_awal yang diassign. Lalu kembalikan indexnya.
+        // Ambill index itu, lalu update vertexnya
+        clicked_corner = false;
+      }
+    } else if (type === "persegipanjang") {
       const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
       const vertex2 = new Vertex(x_awal, y, new Color(20, 20, 20), gl);
       const vertex3 = new Vertex(x, y, new Color(20, 20, 20), gl);
@@ -310,7 +335,29 @@ const main = () => {
     let transformasi = (<HTMLInputElement>document.getElementById("transformasi"))?.value;
     let x = (e.offsetX / canvas.clientWidth) * 2 - 1;
     let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
-    if (id_clicked === -1 && is_clicked) {
+    if (select_mode) {
+      function matching(shape: Shape2D) {
+        return shape.vertices.find((el) => {
+          return Math.abs(el.x - x) < 0.01 && Math.abs(el.y - y) < 0.01;
+        });
+      }
+      var findMatch = shape.find(matching);
+      if (findMatch && counter === 0) {
+        let x = (e.offsetX / canvas.clientWidth) * 2 - 1;
+        let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
+        let lingkaran = new Circle(x, y, gl);
+        counter++;
+        shape.push(lingkaran);
+        redrawShape(gl);
+        selected = findMatch;
+      } else {
+        if (counter !== 0) {
+          shape.pop();
+          counter--;
+          redrawShape(gl);
+        }
+      }
+    } else if (id_clicked === -1 && is_clicked) {
       createShape(x_awal, y_awal, x, y, gl, false);
     } else {
       // Fungsi untuk dilatasi dan translasi
@@ -367,6 +414,11 @@ const main = () => {
     x_awal = x; // Menyimpan posisi awal x
     y_awal = y; // Menyimpan posisi awal y
     is_clicked = true;
+    if (select_mode) {
+      if (counter !== 0) {
+        clicked_corner = true;
+      }
+    }
   });
 
   // Fungsi untuk menggambar bentuk dengan menggunakan drag, disini untuk terakhir kali menahan mouse (membangun bentuk)
