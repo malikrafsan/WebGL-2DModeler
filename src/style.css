@@ -57,3 +57,20 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
+
+.flex {
+    display: flex;
+    flex-direction: row;
+}
+
+.container-card {
+    width: max-content;
+    margin-right: 90px;
+    margin-top: 50px;
+}
+
+.card {
+    border: 2px solid black;
+    padding: 0px 35px;
+}
+

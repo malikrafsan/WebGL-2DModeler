@@ -59,7 +59,7 @@ class Vertex {
 
 class Shape2D {
   protected static counter: number = 0;
-  protected vertices: Vertex[];
+  public vertices: Vertex[];
   protected id: number;
   protected gl: WebGLRenderingContext;
 
