@@ -147,6 +147,7 @@ const main = () => {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     shape = [];
+    polygon = [];
   })
 
   // Melakukan penghapusan objek terbaru yang telah dibuat
