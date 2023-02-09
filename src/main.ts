@@ -19,6 +19,7 @@ var sekarang = {
 let shape: Shape2D[]  = []; // Merupakan array untuk menyimpan daftar bentuk yang telah dibuat
 let polygon: Vertex[] = []; // Merupakan array untuk menyimpan sisi dari poligon yang telah diklik pengguna
 let n_sisi = 1; // Untuk memastikan bahwa pengguna mengklik setidaknya 3 kali untuk membentuk sebuah bangun datar
+let is_clicked = false;
 
 let x_awal = -1; // Kondisi awal sumbu x dimana pengguna mengklik mouse
 let y_awal = -1; // Kondisi awal sumbu y dimana pengguna mengklik mouse
@@ -195,16 +196,83 @@ const main = () => {
     }
   });
 
+
+  canvas.addEventListener('mousemove', function (e) {
+    let type = document.getElementById("bentuk")?.value;
+    let x = e.offsetX / canvas.clientWidth * 2 - 1;
+    let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
+    if(is_clicked) {
+      if(type === "persegipanjang") {
+        const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
+        const vertex2 = new Vertex(x_awal, y, new Color(20, 20, 20), gl);
+        const vertex3 = new Vertex(x, y, new Color(20, 20, 20), gl);
+        const vertex4 = new Vertex(x, y_awal, new Color(20, 20, 20), gl);
+        const square = new Square([vertex, vertex2, vertex3, vertex4], gl);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        for(let i = 0; i < shape.length; i++){
+          shape[i].draw();
+        }
+        square.draw();
+      } else if (type === "garis") {
+        const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
+        const vertex2 = new Vertex(x, y, new Color(20, 20, 20), gl);
+        const line = new Line([vertex, vertex2], gl);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        for(let i = 0; i < shape.length; i++){
+          shape[i].draw();
+        }
+        line.draw();
+      } else if (type === "persegi") {
+        let x_res_index;
+        let y_res_index;
+        let final_index;
+  
+        if(Math.abs(x - x_awal) <= Math.abs(y - y_awal)) {
+          final_index = Math.abs(y - y_awal);
+        } else {
+          final_index = Math.abs(x - x_awal);
+        }
+        if(x < x_awal) {
+          x_res_index = x_awal - final_index;
+        } else {
+          x_res_index = x_awal + final_index;
+        }
+  
+        if(y < y_awal) {
+          y_res_index = y_awal - final_index;
+        } else {
+          y_res_index = y_awal + final_index;
+        }
+        
+        const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
+        const vertex2 = new Vertex(x_awal, y_res_index, new Color(20, 20, 20), gl);
+        const vertex3 = new Vertex(x_res_index, y_res_index, new Color(20, 20, 20), gl);
+        const vertex4 = new Vertex(x_res_index, y_awal, new Color(20, 20, 20), gl);
+        const square = new Square([vertex, vertex2, vertex3, vertex4], gl);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        for(let i = 0; i < shape.length; i++){
+          shape[i].draw();
+        }
+        square.draw();
+      }
+    }
+  });
+
   // Fungsi untuk menggambar bentuk dengan menggunakan drag, disini untuk pertama kali melakukan klik
   canvas.addEventListener('mousedown', function (e) {
     let x = e.offsetX / canvas.clientWidth * 2 - 1;
     let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
     x_awal = x; // Menyimpan posisi awal x
     y_awal = y; // Menyimpan posisi awal y
+    is_clicked = true;
   });
 
   // Fungsi untuk menggambar bentuk dengan menggunakan drag, disini untuk terakhir kali menahan mouse (membangun bentuk)
   canvas.addEventListener('mouseup', function (e) {
+    is_clicked = false;
     let type = document.getElementById("bentuk")?.value;
     let x = e.offsetX / canvas.clientWidth * 2 - 1;
     let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
