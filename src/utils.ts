@@ -13,3 +13,20 @@ function findNearestVertex(x_awal: number, y_awal: number, shape: Shape2D): numb
   }
   return index;
 }
+
+function save(shapes: Shape2D[], filename: string) {
+  // Membuat data
+  let data = shapes.map((el) => {
+    return {
+      shape: el.constructor.name,
+      vertices: el,
+    };
+  });
+  // Download data
+  let blob = new Blob([JSON.stringify(data)], { type: "text/plain;charset=utf-8" });
+  let a = document.createElement("a"),
+    url = URL.createObjectURL(blob);
+  a.href = url;
+  a.download = filename;
+  a.click();
+}

@@ -38,6 +38,9 @@ const main = () => {
   const type_button = <HTMLInputElement>document.querySelector("#bentuk");
   const ul_data = document.querySelector("#card");
   const select_button = document.querySelector("#select");
+  const save_button = document.querySelector("#save");
+  const load_button = document.querySelector("#load");
+  const file_name_span = document.querySelector("#current_file");
 
   if (!(canvas instanceof HTMLCanvasElement)) {
     throw new Error("No html canvas element.");
@@ -54,6 +57,7 @@ const main = () => {
   if (!(select_button instanceof HTMLButtonElement)) {
     throw new Error("No html button element.");
   }
+
   // WebGL rendering context
   const gl = canvas.getContext("webgl");
 
@@ -167,6 +171,48 @@ const main = () => {
   select_button.addEventListener("click", function (e) {
     select_button?.classList.toggle("active");
     select_mode = !select_mode;
+  });
+
+  // Melakukan save data yang telah dibuat
+  save_button?.addEventListener("click", function (e) {
+    save(shape, "shape.json");
+  });
+
+  // Melakukan load data yang telah disimpan
+  load_button?.addEventListener("click", function (e) {
+    let input = document.createElement("input");
+    input.type = "file";
+    input.hidden = true;
+    input.accept = ".json";
+    input.click();
+    input.onchange = (e) => {
+      let file = (<HTMLInputElement>e.target)?.files;
+      if (file) {
+        let reader = new FileReader();
+        reader.readAsText(file[0]);
+        reader.onload = function () {
+          let result = JSON.parse(reader.result as string);
+          // Membuat vertex baru berdasarkan data yang telah disimpan
+          let vertex_result = result.map((data: any) => {
+            let vertex_data = data.vertices.vertices.map((el: any) => {
+              return new Vertex(el.x, el.y, new Color(el.c.r, el.c.g, el.c.b), gl);
+            });
+            // Membuat shapes baru berdasarkan bentuk yang telah disimpan
+            if (data.shape === "Square") {
+              return new Square(vertex_data, gl);
+            } else if (data.shape === "Polygon") {
+              return new Polygon(vertex_data, gl);
+            } else if (data.shape === "Line") {
+              return new Line(vertex_data, gl);
+            }
+          });
+          shape = vertex_result;
+          displayData();
+          redrawShape(gl);
+        };
+        file_name_span!.textContent = file[0].name;
+      }
+    };
   });
 
   // Fungsi untuk melakukan render ulang data yang hendak ditampilkan pada kiri canvas
