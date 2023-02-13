@@ -1,7 +1,3 @@
-// import globalVars from "./globals";
-
-// import { arrayBuffer } from "stream/consumers";
-
 class Color {
   protected r: number;
   protected g: number;
@@ -187,10 +183,3 @@ class Circle extends Shape2D {
     this.materialize(this.gl.TRIANGLE_FAN);
   }
 }
-
-// export {
-//   Color,
-//   Vertex,
-//   Shape2D,
-//   Square,
-// }

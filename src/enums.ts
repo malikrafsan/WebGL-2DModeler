@@ -6,8 +6,3 @@ const MODES = {
 } as const;
 
 type MODE_TYPES = typeof MODES[keyof typeof MODES];
-
-// export {
-//   MODES,
-//   MODE_TYPES,
-// }

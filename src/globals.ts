@@ -8,5 +8,3 @@ class GlobalVars {
 }
 
 const globalVars = new GlobalVars();
-
-// export default new GlobalVars();
