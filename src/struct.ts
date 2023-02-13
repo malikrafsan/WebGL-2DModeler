@@ -1,16 +1,16 @@
 class WorldState {
-  private shapes: Shape2D[];
-  private mode: MODE_TYPES;
-  // TODO: add new needed attributes
-
-  constructor() {
-    this.shapes = [];
-    this.mode = MODES.DRAW;
-  }
-
-  public addShape(shape: Shape2D): void {
-    this.shapes.push(shape);
-  }
+  public shape: Shape2D[] = []; // Merupakan array untuk menyimpan daftar bentuk yang telah dibuat
+  public polygon: Vertex[] = []; // Merupakan array untuk menyimpan sisi dari poligon yang telah diklik pengguna
+  public n_sisi = 1; // Untuk memastikan bahwa pengguna mengklik setidaknya 3 kali untuk membentuk sebuah bangun datar
+  public is_clicked = false; // Untuk mengetahui apakah pengguna sedang mengklik suatu bangunan atau tidak
+  public id_clicked = -1; // Untuk mengetahui id bangunan yang sedang diklik
+  public saver_tranformation_shape: Shape2D | undefined = undefined; // Untuk menyimpan sementara bangunan yang sedang dilakukan translasi atau dilatasi
+  public clicked_corner = false; // untuk mengetahui jika pengguna mengklik salah satu sudut dari sebuah bangunan
+  public select_mode = false; // untuk mengetahui apakah pengguna sedang melakukan select mode atau tidak
+  public selected: Shape2D | undefined = undefined; // untuk menyimpan shape yang dipilih sudutnya
+  public counter = 0; // untuk menghilangkan titik pada shape yang diselect
+  public x_awal = -1;
+  public y_awal = -1;
 }
 
 class ElementContainer {
