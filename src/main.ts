@@ -13,35 +13,10 @@ let x_awal = -1; // Kondisi awal sumbu x dimana pengguna mengklik mouse
 let y_awal = -1; // Kondisi awal sumbu y dimana pengguna mengklik mouse
 
 const main = () => {
-  // Digunakan untuk mendefinisikan daftar button yang ada
-  const canvas = document.querySelector("#canvas");
-  const clear_button = document.querySelector("#clear");
-  const pop_button = document.querySelector("#pop");
-  const type_button = <HTMLInputElement>document.querySelector("#bentuk");
-  const ul_data = document.querySelector("#card");
-  const select_button = document.querySelector("#select");
-  const save_button = document.querySelector("#save");
-  const load_button = document.querySelector("#load");
-  const file_name_span = document.querySelector("#current_file");
-
-  if (!(canvas instanceof HTMLCanvasElement)) {
-    throw new Error("No html canvas element.");
-  }
-
-  if (!(clear_button instanceof HTMLButtonElement)) {
-    throw new Error("No html button element.");
-  }
-
-  if (!(pop_button instanceof HTMLButtonElement)) {
-    throw new Error("No html button element.");
-  }
-
-  if (!(select_button instanceof HTMLButtonElement)) {
-    throw new Error("No html button element.");
-  }
+  const elmts = new ElementContainer();
 
   // WebGL rendering context
-  const gl = canvas.getContext("webgl");
+  const gl = elmts.canvas.getContext("webgl");
 
   if (!gl) {
     throw new Error("Unable to initialize WebGL.");
@@ -130,7 +105,7 @@ const main = () => {
   // Mulai dari sini ke bawah, merupakan bagian yang digunakan untuk fungsionalitas dari index.html
 
   // Melakukan penghapusan seluruh objek yang telah dibuat
-  clear_button.addEventListener("click", function (e) {
+  elmts.clear_button.addEventListener("click", function (e) {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     shape = [];
@@ -139,7 +114,7 @@ const main = () => {
   });
 
   // Melakukan penghapusan objek terbaru yang telah dibuat
-  pop_button.addEventListener("click", function (e) {
+  elmts.pop_button.addEventListener("click", function (e) {
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     shape.pop();
@@ -150,18 +125,18 @@ const main = () => {
   });
 
   // Melakukan hold untuk button select
-  select_button.addEventListener("click", function (e) {
-    select_button?.classList.toggle("active");
+  elmts.select_button.addEventListener("click", function (e) {
+    elmts.select_button?.classList.toggle("active");
     select_mode = !select_mode;
   });
 
   // Melakukan save data yang telah dibuat
-  save_button?.addEventListener("click", function (e) {
+  elmts.save_button?.addEventListener("click", function (e) {
     save(shape, "shape.json");
   });
 
   // Melakukan load data yang telah disimpan
-  load_button?.addEventListener("click", function (e) {
+  elmts.load_button?.addEventListener("click", function (e) {
     let input = document.createElement("input");
     input.type = "file";
     input.hidden = true;
@@ -177,7 +152,12 @@ const main = () => {
           // Membuat vertex baru berdasarkan data yang telah disimpan
           let vertex_result = result.map((data: any) => {
             let vertex_data = data.vertices.vertices.map((el: any) => {
-              return new Vertex(el.x, el.y, new Color(el.c.r, el.c.g, el.c.b), gl);
+              return new Vertex(
+                el.x,
+                el.y,
+                new Color(el.c.r, el.c.g, el.c.b),
+                gl
+              );
             });
             // Membuat shapes baru berdasarkan bentuk yang telah disimpan
             if (data.shape === "Square") {
@@ -192,7 +172,7 @@ const main = () => {
           displayData();
           redrawShape(gl);
         };
-        file_name_span!.textContent = file[0].name;
+        elmts.file_name_span!.textContent = file[0].name;
       }
     };
   });
@@ -201,9 +181,9 @@ const main = () => {
   function displayData() {
     const list = document.createDocumentFragment();
 
-    if (ul_data && ul_data.lastChild && gl) {
-      while (ul_data.firstChild) {
-        ul_data.removeChild(ul_data.lastChild);
+    if (elmts.ul_data && elmts.ul_data.lastChild && gl) {
+      while (elmts.ul_data.firstChild) {
+        elmts.ul_data.removeChild(elmts.ul_data.lastChild);
       }
       shape.map((data, i) => {
         let li = document.createElement("li");
@@ -224,7 +204,7 @@ const main = () => {
         li.appendChild(body);
         list.appendChild(li);
       });
-      ul_data.appendChild(list);
+      elmts.ul_data.appendChild(list);
     }
   }
 
@@ -314,8 +294,8 @@ const main = () => {
   }
 
   // Fungsi untuk mengakhiri proses penggambaran poligon
-  type_button?.addEventListener("click", function (e) {
-    if (type_button?.value === "poligon") {
+  elmts.type_button?.addEventListener("click", function (e) {
+    if (elmts.type_button?.value === "poligon") {
       // Jika pengguna memilih poligon
       if (polygon.length > 2) {
         // Memastikan sisi poligon setidaknya 3 sisi
@@ -331,13 +311,13 @@ const main = () => {
   });
 
   // Fungsi untuk menggambar poligon dengan menggunakan click click
-  canvas.addEventListener("click", function (e) {
+  elmts.canvas.addEventListener("click", function (e) {
     let type = (<HTMLInputElement>document.getElementById("bentuk"))?.value;
     if (id_clicked === -1) {
       if (type === "poligon") {
         // Memastikan tipe yang dipilih adalah poligon
-        let x = (e.offsetX / canvas.clientWidth) * 2 - 1;
-        let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
+        let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
+        let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
         let vertex = new Vertex(x, y, new Color(20, 20, 20), gl); // Menggambar sisi poligon
         polygon.push(vertex); // Mempush sisi ke array berisi daftar sisi poligon
         n_sisi += 1;
@@ -359,10 +339,12 @@ const main = () => {
     }
   });
 
-  canvas.addEventListener("mousemove", function (e) {
-    let transformasi = (<HTMLInputElement>document.getElementById("transformasi"))?.value;
-    let x = (e.offsetX / canvas.clientWidth) * 2 - 1;
-    let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
+  elmts.canvas.addEventListener("mousemove", function (e) {
+    let transformasi = (<HTMLInputElement>(
+      document.getElementById("transformasi")
+    ))?.value;
+    let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
+    let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
     if (select_mode) {
       function matching(shape: Shape2D) {
         return shape.vertices.find((el) => {
@@ -371,8 +353,8 @@ const main = () => {
       }
       var findMatch = shape.find(matching);
       if (findMatch && counter === 0) {
-        let x = (e.offsetX / canvas.clientWidth) * 2 - 1;
-        let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
+        let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
+        let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
         let lingkaran = new Circle(x, y, gl);
         counter++;
         shape.push(lingkaran);
@@ -388,7 +370,6 @@ const main = () => {
     } else if (id_clicked === -1 && is_clicked) {
       createShape(x_awal, y_awal, x, y, gl, false);
     } else if (id_clicked !== -1) {
-
       // Fungsi untuk dilatasi dan translasi
       let shape_clicked = shape[id_clicked];
       let min_jarak_x = 2;
@@ -403,7 +384,10 @@ const main = () => {
       for (let i = 0; i < shape_clicked.vertices.length; i++) {
         min_jarak_x = Math.min(min_jarak_x, shape_clicked.vertices[i].x - x);
         min_jarak_y = Math.min(min_jarak_y, shape_clicked.vertices[i].y - y);
-        min_jarak_y_dil = Math.min(min_jarak_y_dil, y - shape_clicked.vertices[i].y);
+        min_jarak_y_dil = Math.min(
+          min_jarak_y_dil,
+          y - shape_clicked.vertices[i].y
+        );
         smallest_x = Math.min(smallest_x, shape_clicked.vertices[i].x);
         smallest_y = Math.min(smallest_y, shape_clicked.vertices[i].y);
         biggest_x = Math.max(biggest_x, shape_clicked.vertices[i].x);
@@ -411,14 +395,19 @@ const main = () => {
       }
 
       // Perhitungan untuk persen dilatasi
-      let persen_y = (Math.max(min_jarak_y_dil, min_jarak_y) + Math.abs(biggest_y - smallest_y)) / Math.abs(biggest_y - smallest_y);
+      let persen_y =
+        (Math.max(min_jarak_y_dil, min_jarak_y) +
+          Math.abs(biggest_y - smallest_y)) /
+        Math.abs(biggest_y - smallest_y);
       persen_y = Math.min(persen_y, 1.1);
 
       // Proses transformasi geometri
       for (let i = 0; i < shape_clicked.vertices.length; i++) {
         if (transformasi === "translasi") {
-          shape_clicked.vertices[i].x = shape_clicked.vertices[i].x - min_jarak_x;
-          shape_clicked.vertices[i].y = shape_clicked.vertices[i].y - min_jarak_y;
+          shape_clicked.vertices[i].x =
+            shape_clicked.vertices[i].x - min_jarak_x;
+          shape_clicked.vertices[i].y =
+            shape_clicked.vertices[i].y - min_jarak_y;
         } else if (transformasi === "dilatasi") {
           shape_clicked.vertices[i].x = shape_clicked.vertices[i].x * persen_y;
           shape_clicked.vertices[i].y = shape_clicked.vertices[i].y * persen_y;
@@ -437,9 +426,9 @@ const main = () => {
   });
 
   // Fungsi untuk menggambar bentuk dengan menggunakan drag, disini untuk pertama kali melakukan klik
-  canvas.addEventListener("mousedown", function (e) {
-    let x = (e.offsetX / canvas.clientWidth) * 2 - 1;
-    let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
+  elmts.canvas.addEventListener("mousedown", function (e) {
+    let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
+    let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
     x_awal = x; // Menyimpan posisi awal x
     y_awal = y; // Menyimpan posisi awal y
     is_clicked = true;
@@ -451,10 +440,10 @@ const main = () => {
   });
 
   // Fungsi untuk menggambar bentuk dengan menggunakan drag, disini untuk terakhir kali menahan mouse (membangun bentuk)
-  canvas.addEventListener("mouseup", function (e) {
+  elmts.canvas.addEventListener("mouseup", function (e) {
     is_clicked = false;
-    let x = (e.offsetX / canvas.clientWidth) * 2 - 1;
-    let y = (1 - e.offsetY / canvas.clientHeight) * 2 - 1;
+    let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
+    let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
 
     // Membangun berdasarkan tipe yang telah didefinisikan sebelumnya
     if (id_clicked === -1) {
