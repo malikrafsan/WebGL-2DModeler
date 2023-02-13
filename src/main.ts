@@ -1,9 +1,31 @@
-const main = () => {
-  const elmts = new ElementContainer();
-  const state = new WorldState();
+// A user-defined function to create and compile shaders
+const initShader = (
+  type: "VERTEX_SHADER" | "FRAGMENT_SHADER",
+  source: string,
+  gl: WebGLRenderingContext
+) => {
+  const shader = gl.createShader(gl[type]);
 
+  if (!shader) {
+    throw new Error("Unable to create a shader.");
+  }
+
+  gl.shaderSource(shader, source);
+
+  gl.compileShader(shader);
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    throw new Error(
+      `An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`
+    );
+  }
+
+  return shader;
+};
+
+const createGLContext = (canvas: HTMLCanvasElement) => {
   // WebGL rendering context
-  const gl = elmts.canvas.getContext("webgl");
+  const gl = canvas.getContext("webgl");
 
   if (!gl) {
     throw new Error("Unable to initialize WebGL.");
@@ -12,32 +34,6 @@ const main = () => {
   // Clear color
   gl.clearColor(0, 0, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
-
-  // A user-defined function to create and compile shaders
-  const initShader = (
-    type: "VERTEX_SHADER" | "FRAGMENT_SHADER",
-    source: string
-  ) => {
-    const shader = gl.createShader(gl[type]);
-
-    if (!shader) {
-      throw new Error("Unable to create a shader.");
-    }
-
-    gl.shaderSource(shader, source);
-
-    gl.compileShader(shader);
-
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      throw new Error(
-        `An error occurred compiling the shaders: ${gl.getShaderInfoLog(
-          shader
-        )}`
-      );
-    }
-
-    return shader;
-  };
 
   // Vertex shader
   const vertexShader = initShader(
@@ -48,7 +44,8 @@ const main = () => {
     void main() {
       gl_Position = a_position;
     }
-  `
+  `,
+    gl
   );
 
   // Fragment shader
@@ -58,19 +55,18 @@ const main = () => {
     void main() {
       gl_FragColor = vec4(0, 0, 0, 1);
     }
-  `
+  `,
+    gl
   );
 
   // WebGL program
   const program = gl.createProgram();
-
   if (!program) {
     throw new Error("Unable to create the program.");
   }
 
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
-
   gl.linkProgram(program);
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
@@ -98,6 +94,152 @@ const main = () => {
   gl.vertexAttribPointer(index, size, type, normalized, stride, offset);
   gl.enableVertexAttribArray(index);
 
+  return gl;
+};
+
+// Fungsi untuk melakukan render ulang data yang hendak ditampilkan pada kiri canvas
+const displayData = (
+  elmts: ElementContainer,
+  state: WorldState,
+  gl: WebGLRenderingContext
+) => {
+  const list = document.createDocumentFragment();
+
+  if (elmts.ul_data && elmts.ul_data.lastChild && gl) {
+    while (elmts.ul_data.firstChild) {
+      elmts.ul_data.removeChild(elmts.ul_data.lastChild);
+    }
+    state.shape.map((data, i) => {
+      let li = document.createElement("li");
+      let body = document.createElement("p");
+      body.onclick = function (param) {
+        let result = (<HTMLElement>param?.target)?.outerText;
+        result = result.slice(10);
+        state.id_clicked = parseInt(result);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        for (let i = 0; i < state.shape.length; i++) {
+          if (state.id_clicked !== i) {
+            state.shape[i].draw();
+          }
+        }
+      };
+      body.innerHTML = `Object ke-${i}`;
+      li.appendChild(body);
+      list.appendChild(li);
+    });
+    elmts.ul_data.appendChild(list);
+  }
+};
+
+// Fungsi untuk melakukan gambar ulang, parameter yang diminta adalah gl
+const redrawShape = (state: WorldState, gl: WebGLRenderingContext) => {
+  gl.clearColor(0, 0, 0, 0);
+  gl.clear(gl.COLOR_BUFFER_BIT);
+  for (let i = 0; i < state.shape.length; i++) {
+    state.shape[i].draw();
+  }
+};
+
+// Fungsi untuk membuat sebuah shape, fungsi yang diminta adalah
+// Koordinat awal x dan y, koordinat akhir x dan y, gl, serta boolean apakah itu adalah bangunan baru atau hanya temp bangunan
+const createShape = (
+  x_awal: number,
+  y_awal: number,
+  x: number,
+  y: number,
+  gl: WebGLRenderingContext,
+  isNewShape: boolean,
+  elmts: ElementContainer,
+  state: WorldState
+) => {
+  let type = (<HTMLInputElement>document.getElementById("bentuk"))?.value;
+  if (state.select_mode) {
+    if (state.clicked_corner === true && state.selected) {
+      // find vertex yang paling deket dengan x_awal dan y_awal yang diassign. Lalu kembalikan indexnya.
+      let idx_update_shape = state.shape.indexOf(state.selected);
+      let idx_update_vertex = findNearestVertex(
+        x_awal,
+        y_awal,
+        state.shape[idx_update_shape]
+      );
+      state.shape[idx_update_shape].vertices[idx_update_vertex].x = x;
+      state.shape[idx_update_shape].vertices[idx_update_vertex].y = y;
+      // find vertex yang paling deket dengan x_awal dan y_awal yang diassign. Lalu kembalikan indexnya.
+      // Ambill index itu, lalu update vertexnya
+      state.clicked_corner = false;
+    }
+  } else if (type === "persegipanjang") {
+    const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
+    const vertex2 = new Vertex(x_awal, y, new Color(20, 20, 20), gl);
+    const vertex3 = new Vertex(x, y, new Color(20, 20, 20), gl);
+    const vertex4 = new Vertex(x, y_awal, new Color(20, 20, 20), gl);
+    const square = new Square([vertex, vertex2, vertex3, vertex4], gl);
+    redrawShape(state, gl);
+    if (isNewShape) {
+      state.shape.push(square);
+      displayData(elmts, state, gl);
+    } else {
+      square.draw();
+    }
+  } else if (type === "garis") {
+    const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
+    const vertex2 = new Vertex(x, y, new Color(20, 20, 20), gl);
+    const line = new Line([vertex, vertex2], gl);
+    redrawShape(state, gl);
+    if (isNewShape) {
+      state.shape.push(line);
+      displayData(elmts, state, gl);
+    } else {
+      line.draw();
+    }
+  } else if (type === "persegi") {
+    let x_res_index;
+    let y_res_index;
+    let final_index;
+
+    if (Math.abs(x - x_awal) <= Math.abs(y - y_awal)) {
+      final_index = Math.abs(y - y_awal);
+    } else {
+      final_index = Math.abs(x - x_awal);
+    }
+    if (x < x_awal) {
+      x_res_index = x_awal - final_index;
+    } else {
+      x_res_index = x_awal + final_index;
+    }
+
+    if (y < y_awal) {
+      y_res_index = y_awal - final_index;
+    } else {
+      y_res_index = y_awal + final_index;
+    }
+
+    const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
+    const vertex2 = new Vertex(x_awal, y_res_index, new Color(20, 20, 20), gl);
+    const vertex3 = new Vertex(
+      x_res_index,
+      y_res_index,
+      new Color(20, 20, 20),
+      gl
+    );
+    const vertex4 = new Vertex(x_res_index, y_awal, new Color(20, 20, 20), gl);
+    const square = new Square([vertex, vertex2, vertex3, vertex4], gl);
+    redrawShape(state, gl);
+    if (isNewShape) {
+      state.shape.push(square);
+      displayData(elmts, state, gl);
+    } else {
+      square.draw();
+    }
+  }
+};
+
+const main = () => {
+  const elmts = new ElementContainer();
+  const state = new WorldState();
+  const gl = createGLContext(elmts.canvas);
+
   // Mulai dari sini ke bawah, merupakan bagian yang digunakan untuk fungsionalitas dari index.html
 
   // Melakukan penghapusan seluruh objek yang telah dibuat
@@ -106,7 +248,7 @@ const main = () => {
     gl.clear(gl.COLOR_BUFFER_BIT);
     state.shape = [];
     state.polygon = [];
-    displayData();
+    displayData(elmts, state, gl);
   });
 
   // Melakukan penghapusan objek terbaru yang telah dibuat
@@ -117,7 +259,7 @@ const main = () => {
     for (let i = 0; i < state.shape.length; i++) {
       state.shape[i].draw();
     }
-    displayData();
+    displayData(elmts, state, gl);
   });
 
   // Melakukan hold untuk button select
@@ -165,155 +307,13 @@ const main = () => {
             }
           });
           state.shape = vertex_result;
-          displayData();
-          redrawShape(gl);
+          displayData(elmts, state, gl);
+          redrawShape(state, gl);
         };
         elmts.file_name_span!.textContent = file[0].name;
       }
     };
   });
-
-  // Fungsi untuk melakukan render ulang data yang hendak ditampilkan pada kiri canvas
-  function displayData() {
-    const list = document.createDocumentFragment();
-
-    if (elmts.ul_data && elmts.ul_data.lastChild && gl) {
-      while (elmts.ul_data.firstChild) {
-        elmts.ul_data.removeChild(elmts.ul_data.lastChild);
-      }
-      state.shape.map((data, i) => {
-        let li = document.createElement("li");
-        let body = document.createElement("p");
-        body.onclick = function (param) {
-          let result = (<HTMLElement>param?.target)?.outerText;
-          result = result.slice(10);
-          state.id_clicked = parseInt(result);
-          gl.clearColor(0, 0, 0, 0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-          for (let i = 0; i < state.shape.length; i++) {
-            if (state.id_clicked !== i) {
-              state.shape[i].draw();
-            }
-          }
-        };
-        body.innerHTML = `Object ke-${i}`;
-        li.appendChild(body);
-        list.appendChild(li);
-      });
-      elmts.ul_data.appendChild(list);
-    }
-  }
-
-  // Fungsi untuk membuat sebuah shape, fungsi yang diminta adalah
-  // Koordinat awal x dan y, koordinat akhir x dan y, gl, serta boolean apakah itu adalah bangunan baru atau hanya temp bangunan
-  function createShape(
-    x_awal: number,
-    y_awal: number,
-    x: number,
-    y: number,
-    gl: WebGLRenderingContext,
-    isNewShape: boolean
-  ) {
-    let type = (<HTMLInputElement>document.getElementById("bentuk"))?.value;
-    if (state.select_mode) {
-      if (state.clicked_corner === true && state.selected) {
-        // find vertex yang paling deket dengan x_awal dan y_awal yang diassign. Lalu kembalikan indexnya.
-        let idx_update_shape = state.shape.indexOf(state.selected);
-        let idx_update_vertex = findNearestVertex(
-          x_awal,
-          y_awal,
-          state.shape[idx_update_shape]
-        );
-        state.shape[idx_update_shape].vertices[idx_update_vertex].x = x;
-        state.shape[idx_update_shape].vertices[idx_update_vertex].y = y;
-        // find vertex yang paling deket dengan x_awal dan y_awal yang diassign. Lalu kembalikan indexnya.
-        // Ambill index itu, lalu update vertexnya
-        state.clicked_corner = false;
-      }
-    } else if (type === "persegipanjang") {
-      const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
-      const vertex2 = new Vertex(x_awal, y, new Color(20, 20, 20), gl);
-      const vertex3 = new Vertex(x, y, new Color(20, 20, 20), gl);
-      const vertex4 = new Vertex(x, y_awal, new Color(20, 20, 20), gl);
-      const square = new Square([vertex, vertex2, vertex3, vertex4], gl);
-      redrawShape(gl);
-      if (isNewShape) {
-        state.shape.push(square);
-        displayData();
-      } else {
-        square.draw();
-      }
-    } else if (type === "garis") {
-      const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
-      const vertex2 = new Vertex(x, y, new Color(20, 20, 20), gl);
-      const line = new Line([vertex, vertex2], gl);
-      redrawShape(gl);
-      if (isNewShape) {
-        state.shape.push(line);
-        displayData();
-      } else {
-        line.draw();
-      }
-    } else if (type === "persegi") {
-      let x_res_index;
-      let y_res_index;
-      let final_index;
-
-      if (Math.abs(x - x_awal) <= Math.abs(y - y_awal)) {
-        final_index = Math.abs(y - y_awal);
-      } else {
-        final_index = Math.abs(x - x_awal);
-      }
-      if (x < x_awal) {
-        x_res_index = x_awal - final_index;
-      } else {
-        x_res_index = x_awal + final_index;
-      }
-
-      if (y < y_awal) {
-        y_res_index = y_awal - final_index;
-      } else {
-        y_res_index = y_awal + final_index;
-      }
-
-      const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
-      const vertex2 = new Vertex(
-        x_awal,
-        y_res_index,
-        new Color(20, 20, 20),
-        gl
-      );
-      const vertex3 = new Vertex(
-        x_res_index,
-        y_res_index,
-        new Color(20, 20, 20),
-        gl
-      );
-      const vertex4 = new Vertex(
-        x_res_index,
-        y_awal,
-        new Color(20, 20, 20),
-        gl
-      );
-      const square = new Square([vertex, vertex2, vertex3, vertex4], gl);
-      redrawShape(gl);
-      if (isNewShape) {
-        state.shape.push(square);
-        displayData();
-      } else {
-        square.draw();
-      }
-    }
-  }
-
-  // Fungsi untuk melakukan gambar ulang, parameter yang diminta adalah gl
-  function redrawShape(gl: WebGLRenderingContext) {
-    gl.clearColor(0, 0, 0, 0);
-    gl.clear(gl.COLOR_BUFFER_BIT);
-    for (let i = 0; i < state.shape.length; i++) {
-      state.shape[i].draw();
-    }
-  }
 
   // Fungsi untuk mengakhiri proses penggambaran poligon
   elmts.type_button?.addEventListener("click", function (e) {
@@ -324,10 +324,10 @@ const main = () => {
         let poligon = new Polygon(state.polygon, gl);
         poligon.convexHull();
         state.shape.push(poligon);
-        displayData();
+        displayData(elmts, state, gl);
         state.polygon = [];
         state.n_sisi = 0;
-        redrawShape(gl);
+        redrawShape(state, gl);
       }
     }
   });
@@ -356,7 +356,7 @@ const main = () => {
       if (state.saver_tranformation_shape) {
         state.shape[state.id_clicked] = state.saver_tranformation_shape;
         state.id_clicked = -1;
-        redrawShape(gl);
+        redrawShape(state, gl);
       }
     }
   });
@@ -380,17 +380,17 @@ const main = () => {
         let lingkaran = new Circle(x, y, gl);
         state.counter++;
         state.shape.push(lingkaran);
-        redrawShape(gl);
+        redrawShape(state, gl);
         state.selected = findMatch;
       } else {
         if (state.counter !== 0) {
           state.shape.pop();
           state.counter--;
-          redrawShape(gl);
+          redrawShape(state, gl);
         }
       }
     } else if (state.id_clicked === -1 && state.is_clicked) {
-      createShape(state.x_awal, state.y_awal, x, y, gl, false);
+      createShape(state.x_awal, state.y_awal, x, y, gl, false, elmts, state);
     } else if (state.id_clicked !== -1) {
       // Fungsi untuk dilatasi dan translasi
       let shape_clicked = state.shape[state.id_clicked];
@@ -469,10 +469,10 @@ const main = () => {
 
     // Membangun berdasarkan tipe yang telah didefinisikan sebelumnya
     if (state.id_clicked === -1) {
-      createShape(state.x_awal, state.y_awal, x, y, gl, true);
+      createShape(state.x_awal, state.y_awal, x, y, gl, true, elmts, state);
 
       // Bagian untuk menghapus isi canvas dan melakukan draw ulang semua bentuk yang disimpan pada array shape
-      redrawShape(gl);
+      redrawShape(state, gl);
     }
   });
 };
