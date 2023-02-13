@@ -1,21 +1,3 @@
-// import { Vertex, Color, Square } from "./models";
-
-var sekarang = {
-  shape: "Garis",
-  filled: true,
-  focus: -1,
-  sides: 4,
-  color: "",
-
-  resize_mode: false,
-  changecolor_mode: false,
-  draw_mode: false,
-  poligon_coordinates: [],
-
-  origin_x: 0,
-  origin_y: 0,
-};
-
 let shape: Shape2D[] = []; // Merupakan array untuk menyimpan daftar bentuk yang telah dibuat
 let polygon: Vertex[] = []; // Merupakan array untuk menyimpan sisi dari poligon yang telah diklik pengguna
 let n_sisi = 1; // Untuk memastikan bahwa pengguna mengklik setidaknya 3 kali untuk membentuk sebuah bangun datar
@@ -405,7 +387,8 @@ const main = () => {
       }
     } else if (id_clicked === -1 && is_clicked) {
       createShape(x_awal, y_awal, x, y, gl, false);
-    } else {
+    } else if (id_clicked !== -1) {
+
       // Fungsi untuk dilatasi dan translasi
       let shape_clicked = shape[id_clicked];
       let min_jarak_x = 2;
