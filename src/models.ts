@@ -58,11 +58,13 @@ class Shape2D {
   public vertices: Vertex[];
   protected id: number;
   protected gl: WebGLRenderingContext;
+  protected shapeType: SHAPE_TYPES;
 
-  constructor(vertices: Vertex[], gl: WebGLRenderingContext) {
+  constructor(vertices: Vertex[], gl: WebGLRenderingContext, shapeType: SHAPE_TYPES) {
     this.id = Shape2D.counter++;
     this.vertices = vertices;
     this.gl = gl;
+    this.shapeType = shapeType;
   }
 
   protected materialize(glShape: number): void {
@@ -93,7 +95,7 @@ class Square extends Shape2D {
     if (vertices.length !== 4) {
       throw new Error("A square must have 4 vertices.");
     }
-    super(vertices, gl);
+    super(vertices, gl, SHAPE_TYPE.PERSEGI);
   }
 
   draw() {
@@ -106,7 +108,7 @@ class Line extends Shape2D {
     if (vertices.length !== 2) {
       throw new Error("A line must have 1 vertices.");
     }
-    super(vertices, gl);
+    super(vertices, gl, SHAPE_TYPE.GARIS);
   }
 
   draw() {
@@ -119,7 +121,7 @@ class Polygon extends Shape2D {
     if (vertices.length < 3) {
       throw new Error("A polygon must have more than 3 vertices.");
     }
-    super(vertices, gl);
+    super(vertices, gl, SHAPE_TYPE.POLIGON);
   }
 
   draw() {
@@ -176,7 +178,7 @@ class Circle extends Shape2D {
       var vertex = new Vertex(x + rad * Math.cos((i * doublePI) / steps), y + rad * Math.sin((i * doublePI) / steps), new Color(20, 20, 20), gl);
       vertexlingkaran.push(vertex);
     }
-    super(vertexlingkaran, gl);
+    super(vertexlingkaran, gl, SHAPE_TYPE.LINGKARAN);
   }
 
   draw() {

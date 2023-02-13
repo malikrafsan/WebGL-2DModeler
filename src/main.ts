@@ -169,7 +169,7 @@ const createShape = (
       // Ambill index itu, lalu update vertexnya
       state.clicked_corner = false;
     }
-  } else if (type === "persegipanjang") {
+  } else if (type === SHAPE_TYPE.PERSEGI_PANJANG) {
     const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
     const vertex2 = new Vertex(x_awal, y, new Color(20, 20, 20), gl);
     const vertex3 = new Vertex(x, y, new Color(20, 20, 20), gl);
@@ -182,7 +182,7 @@ const createShape = (
     } else {
       square.draw();
     }
-  } else if (type === "garis") {
+  } else if (type === SHAPE_TYPE.GARIS) {
     const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
     const vertex2 = new Vertex(x, y, new Color(20, 20, 20), gl);
     const line = new Line([vertex, vertex2], gl);
@@ -193,7 +193,7 @@ const createShape = (
     } else {
       line.draw();
     }
-  } else if (type === "persegi") {
+  } else if (type === SHAPE_TYPE.PERSEGI) {
     let x_res_index;
     let y_res_index;
     let final_index;
