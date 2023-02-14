@@ -28,39 +28,52 @@ class Renderer {
 
   public createGLContext(canvas: HTMLCanvasElement) {
     // WebGL rendering context
-    const gl = canvas.getContext("webgl");
+    const gl = canvas.getContext("webgl", {
+      preserveDrawingBuffer: true,
+    });
 
     if (!gl) {
       throw new Error("Unable to initialize WebGL.");
     }
 
-    // Clear color
-    gl.clearColor(0, 0, 0, 0);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    // Vertex shader
-    const vertexShader = this.initShader(
-      "VERTEX_SHADER",
-      `
-    attribute vec4 a_position;
+    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
-    void main() {
-      gl_Position = a_position;
+    if (!vertexShader || !fragmentShader) {
+      throw new Error("Unable to create the shaders.");
     }
-  `,
-      gl
-    );
 
-    // Fragment shader
-    const fragmentShader = this.initShader(
-      "FRAGMENT_SHADER",
-      `
-    void main() {
-      gl_FragColor = vec4(0, 0, 0, 1);
-    }
-  `,
-      gl
-    );
+    const vertexShaderConfig = `
+      precision mediump float;
+
+      attribute vec2 vertPosition;
+      attribute vec3 vertColor;
+      varying vec3 fragColor;
+
+      void main() {
+        fragColor = vertColor;
+        gl_Position = vec4(vertPosition,0.0,1.0);
+      }
+    `;
+
+    const fragmentShaderConfig = `
+      precision mediump float;
+      varying vec3 fragColor;
+
+      void main() {
+        gl_FragColor = vec4(fragColor, 1.0);
+      }
+    `;
+
+    gl.shaderSource(vertexShader, vertexShaderConfig);
+    gl.shaderSource(fragmentShader, fragmentShaderConfig);
+
+    gl.compileShader(vertexShader);
+    gl.compileShader(fragmentShader);
 
     // WebGL program
     const program = gl.createProgram();
@@ -71,31 +84,35 @@ class Renderer {
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
+    gl.validateProgram(program);
 
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      throw new Error(
-        `Unable to link the shaders: ${gl.getProgramInfoLog(program)}`
-      );
-    }
+    const vertexBufferObject = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, vertexBufferObject);
 
+    const positionAttrLocation = gl.getAttribLocation(program, "vertPosition");
+    const colorAttrLocation = gl.getAttribLocation(program, "vertColor");
+
+    gl.vertexAttribPointer(
+      positionAttrLocation,
+      2,
+      gl.FLOAT,
+      false,
+      5 * Float32Array.BYTES_PER_ELEMENT,
+      0
+    );
+
+    gl.vertexAttribPointer(
+      colorAttrLocation,
+      3,
+      gl.FLOAT,
+      false,
+      5 * Float32Array.BYTES_PER_ELEMENT,
+      2 * Float32Array.BYTES_PER_ELEMENT
+    );
+    
+    gl.enableVertexAttribArray(positionAttrLocation);
+    gl.enableVertexAttribArray(colorAttrLocation);
     gl.useProgram(program);
-
-    // Vertext buffer
-    const positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-    // const positions = [0, 1, 0.866, -0.5, -0.866, -0.5];
-    const positions = [0, 1, 2];
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-
-    const index = gl.getAttribLocation(program, "a_position");
-    const size = 2;
-    const type = gl.FLOAT;
-    const normalized = false;
-    const stride = 0;
-    const offset = 0;
-    gl.vertexAttribPointer(index, size, type, normalized, stride, offset);
-    gl.enableVertexAttribArray(index);
 
     return gl;
   }
@@ -137,9 +154,10 @@ class Renderer {
 
   // Fungsi untuk melakukan gambar ulang, parameter yang diminta adalah gl
   public redraw(state: WorldState, gl: WebGLRenderingContext) {
-    gl.clearColor(0, 0, 0, 0);
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     for (let i = 0; i < state.shape.length; i++) {
+      console.log(state.shape[i]);
       state.shape[i].draw();
     }
   }

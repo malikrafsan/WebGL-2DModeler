@@ -23,6 +23,8 @@ class ElementContainer {
   public readonly save_button;
   public readonly load_button;
   public readonly file_name_span;
+  public readonly fill_btn;
+  public readonly color_picker;
 
   constructor() {
     const canvas = document.querySelector("#canvas");
@@ -34,6 +36,8 @@ class ElementContainer {
     const save_button = document.querySelector("#save");
     const load_button = document.querySelector("#load");
     const file_name_span = document.querySelector("#current_file");
+    const fill_btn = document.querySelector("#fill");
+    const color_picker = document.querySelector("#color_picker");
 
     if (!(canvas instanceof HTMLCanvasElement)) {
       throw new Error("No html canvas element.");
@@ -51,6 +55,14 @@ class ElementContainer {
       throw new Error("No html button element.");
     }
 
+    if (!(fill_btn instanceof HTMLInputElement)) {
+      throw new Error("No html input element.");
+    }
+
+    if (!(color_picker instanceof HTMLInputElement)) {
+      throw new Error("No html input element.");
+    }
+
     this.canvas = canvas;
     this.clear_button = clear_button;
     this.pop_button = pop_button;
@@ -60,5 +72,7 @@ class ElementContainer {
     this.save_button = save_button;
     this.load_button = load_button;
     this.file_name_span = file_name_span;
+    this.fill_btn = fill_btn;
+    this.color_picker = color_picker;
   }
 }

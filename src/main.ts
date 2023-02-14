@@ -30,12 +30,16 @@ const createShape = (
       state.clicked_corner = false;
     }
   } else if (type === SHAPE_TYPE.PERSEGI_PANJANG) {
-    const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
-    const vertex2 = new Vertex(x_awal, y, new Color(20, 20, 20), gl);
-    const vertex3 = new Vertex(x, y, new Color(20, 20, 20), gl);
-    const vertex4 = new Vertex(x, y_awal, new Color(20, 20, 20), gl);
-    const square = new Square([vertex, vertex2, vertex3, vertex4], gl);
-    
+    const vertex = new Vertex(x_awal, y_awal, Color.fromHex(elmts.color_picker.value), gl);
+    const vertex2 = new Vertex(x_awal, y, Color.fromHex(elmts.color_picker.value), gl);
+    const vertex3 = new Vertex(x, y, Color.fromHex(elmts.color_picker.value), gl);
+    const vertex4 = new Vertex(x, y_awal, Color.fromHex(elmts.color_picker.value), gl);
+    const square = new Square(
+      [vertex, vertex2, vertex3, vertex4],
+      gl,
+      elmts.fill_btn.checked
+    );
+
     renderer.redraw(state, gl);
     if (isNewShape) {
       state.shape.push(square);
@@ -44,9 +48,9 @@ const createShape = (
       square.draw();
     }
   } else if (type === SHAPE_TYPE.GARIS) {
-    const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
-    const vertex2 = new Vertex(x, y, new Color(20, 20, 20), gl);
-    const line = new Line([vertex, vertex2], gl);
+    const vertex = new Vertex(x_awal, y_awal, Color.fromHex(elmts.color_picker.value), gl);
+    const vertex2 = new Vertex(x, y, Color.fromHex(elmts.color_picker.value), gl);
+    const line = new Line([vertex, vertex2], gl, elmts.fill_btn.checked);
     renderer.redraw(state, gl);
     if (isNewShape) {
       state.shape.push(line);
@@ -76,16 +80,20 @@ const createShape = (
       y_res_index = y_awal + final_index;
     }
 
-    const vertex = new Vertex(x_awal, y_awal, new Color(20, 20, 20), gl);
-    const vertex2 = new Vertex(x_awal, y_res_index, new Color(20, 20, 20), gl);
+    const vertex = new Vertex(x_awal, y_awal, Color.fromHex(elmts.color_picker.value), gl);
+    const vertex2 = new Vertex(x_awal, y_res_index, Color.fromHex(elmts.color_picker.value), gl);
     const vertex3 = new Vertex(
       x_res_index,
       y_res_index,
-      new Color(20, 20, 20),
+      Color.fromHex(elmts.color_picker.value),
       gl
     );
-    const vertex4 = new Vertex(x_res_index, y_awal, new Color(20, 20, 20), gl);
-    const square = new Square([vertex, vertex2, vertex3, vertex4], gl);
+    const vertex4 = new Vertex(x_res_index, y_awal, Color.fromHex(elmts.color_picker.value), gl);
+    const square = new Square(
+      [vertex, vertex2, vertex3, vertex4],
+      gl,
+      elmts.fill_btn.checked
+    );
     renderer.redraw(state, gl);
     if (isNewShape) {
       state.shape.push(square);
@@ -158,11 +166,11 @@ const initListener = (
             });
             // Membuat shapes baru berdasarkan bentuk yang telah disimpan
             if (data.shape === "Square") {
-              return new Square(vertex_data, gl);
+              return new Square(vertex_data, gl, elmts.fill_btn.checked);
             } else if (data.shape === "Polygon") {
-              return new Polygon(vertex_data, gl);
+              return new Polygon(vertex_data, gl, elmts.fill_btn.checked);
             } else if (data.shape === "Line") {
-              return new Line(vertex_data, gl);
+              return new Line(vertex_data, gl, elmts.fill_btn.checked);
             }
           });
           state.shape = vertex_result;
@@ -180,7 +188,7 @@ const initListener = (
       // Jika pengguna memilih poligon
       if (state.polygon.length > 2) {
         // Memastikan sisi poligon setidaknya 3 sisi
-        let poligon = new Polygon(state.polygon, gl);
+        let poligon = new Polygon(state.polygon, gl, elmts.fill_btn.checked);
         poligon.convexHull();
         state.shape.push(poligon);
         renderer.render(elmts, state, gl);
@@ -199,13 +207,13 @@ const initListener = (
         // Memastikan tipe yang dipilih adalah poligon
         let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
         let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
-        let vertex = new Vertex(x, y, new Color(20, 20, 20), gl); // Menggambar sisi poligon
+        let vertex = new Vertex(x, y, Color.fromHex(elmts.color_picker.value), gl); // Menggambar sisi poligon
         state.polygon.push(vertex); // Mempush sisi ke array berisi daftar sisi poligon
         state.n_sisi += 1;
 
         if (state.n_sisi > 2) {
           // Jika sisi sudah lebih dari dua, dilakukan draw poligon
-          let poligon = new Polygon(state.polygon, gl);
+          let poligon = new Polygon(state.polygon, gl, elmts.fill_btn.checked);
           poligon.convexHull();
           poligon.draw();
         }
@@ -236,7 +244,7 @@ const initListener = (
       if (findMatch && state.counter === 0) {
         let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
         let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
-        let lingkaran = new Circle(x, y, gl);
+        let lingkaran = new Circle(x, y, gl, elmts.fill_btn.checked);
         state.counter++;
         state.shape.push(lingkaran);
         renderer.redraw(state, gl);
