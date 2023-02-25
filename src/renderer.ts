@@ -157,7 +157,6 @@ class Renderer {
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     for (let i = 0; i < state.shape.length; i++) {
-      console.log(state.shape[i]);
       state.shape[i].draw();
     }
   }

@@ -89,19 +89,8 @@ class Shape2D {
 
     let temp = [];
     for (let i = 0; i < flatVertices.length; i++) {
-      // temp.push(flatVertices[i][0]);
-      // temp.push(flatVertices[i][1]);
-      // console.log("temp", temp);
-
-      // console.log("flatVertices[i]", flatVertices[i]);
       temp.push(...flatVertices[i]);
-
-      // temp.push(flatVertices[i][2]);
-      // temp.push(flatVertices[i][3]);
-      // temp.push(flatVertices[i][4]);
     }
-
-    console.log(temp);
 
     const array = new Float32Array(temp);
 
