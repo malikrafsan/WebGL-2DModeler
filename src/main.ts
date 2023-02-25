@@ -126,16 +126,16 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
           let result = JSON.parse(reader.result as string);
           // Membuat vertex baru berdasarkan data yang telah disimpan
           let vertex_result = result.map((data: any) => {
-            let vertex_data = data.vertices.vertices.map((el: any) => {
+            let vertex_data = data.vertices.map((el: any) => {
               return new Vertex(el.x, el.y, new Color(el.c.r, el.c.g, el.c.b), gl);
             });
             // Membuat shapes baru berdasarkan bentuk yang telah disimpan
             if (data.shape === "Square") {
-              return new Square(vertex_data, gl, elmts.fill_btn.checked);
+              return new Square(vertex_data, gl, data.filled);
             } else if (data.shape === "Polygon") {
-              return new Polygon(vertex_data, gl, elmts.fill_btn.checked);
+              return new Polygon(vertex_data, gl, data.filled);
             } else if (data.shape === "Line") {
-              return new Line(vertex_data, gl, elmts.fill_btn.checked);
+              return new Line(vertex_data, gl, data.filled);
             }
           });
           state.shape = vertex_result;

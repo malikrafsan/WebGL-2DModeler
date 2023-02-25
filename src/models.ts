@@ -67,7 +67,7 @@ class Shape2D {
   protected id: number;
   protected gl: WebGLRenderingContext;
   protected shapeType: SHAPE_TYPES;
-  protected filled: boolean;
+  public filled: boolean;
 
   constructor(vertices: Vertex[], gl: WebGLRenderingContext, shapeType: SHAPE_TYPES, filled: boolean) {
     this.id = Shape2D.counter++;

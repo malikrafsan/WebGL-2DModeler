@@ -130,7 +130,8 @@ function save(shapes: Shape2D[], filename: string) {
   let data = shapes.map((el) => {
     return {
       shape: el.constructor.name,
-      vertices: el,
+      vertices: el.vertices,
+      filled: el.filled,
     };
   });
   // Download data
