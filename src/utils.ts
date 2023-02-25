@@ -30,3 +30,7 @@ function save(shapes: Shape2D[], filename: string) {
   a.download = filename;
   a.click();
 }
+
+const objKey = <T extends Object>(obj: T) => {
+  return Object.keys(obj) as (keyof T)[];
+}

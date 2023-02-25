@@ -11,6 +11,7 @@ class WorldState {
   public counter = 0; // untuk menghilangkan titik pada shape yang diselect
   public x_awal = -1;
   public y_awal = -1;
+  public featureMode: FEATURE_MODE_TYPES = FEATURE_MODES.General; // untuk mengetahui mode yang sedang aktif
 }
 
 class ElementContainer {
@@ -25,6 +26,7 @@ class ElementContainer {
   public readonly file_name_span;
   public readonly fill_btn;
   public readonly color_picker;
+  public readonly featureModeSelect;
 
   constructor() {
     const canvas = document.querySelector("#canvas");
@@ -38,6 +40,7 @@ class ElementContainer {
     const file_name_span = document.querySelector("#current_file");
     const fill_btn = document.querySelector("#fill");
     const color_picker = document.querySelector("#color_picker");
+    const featureModeSelect = document.querySelector("#feature_mode");
 
     if (!(canvas instanceof HTMLCanvasElement)) {
       throw new Error("No html canvas element.");
@@ -63,6 +66,10 @@ class ElementContainer {
       throw new Error("No html input element.");
     }
 
+    if (!(featureModeSelect instanceof HTMLSelectElement)) {
+      throw new Error("No html select element.");
+    }
+
     this.canvas = canvas;
     this.clear_button = clear_button;
     this.pop_button = pop_button;
@@ -74,5 +81,17 @@ class ElementContainer {
     this.file_name_span = file_name_span;
     this.fill_btn = fill_btn;
     this.color_picker = color_picker;
+    this.featureModeSelect = featureModeSelect;
+
+    this.onConstruct();
+  }
+
+  private onConstruct() {
+    objKey(FEATURE_MODES).forEach((key) => {
+      const option = document.createElement("option");
+      option.value = key;
+      option.innerText = key;
+      this.featureModeSelect.appendChild(option);
+    })
   }
 }

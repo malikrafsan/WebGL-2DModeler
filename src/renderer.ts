@@ -132,17 +132,11 @@ class Renderer {
       state.shape.map((data, i) => {
         let li = document.createElement("li");
         let body = document.createElement("p");
-        body.onclick = function (param) {
+        body.onclick = (param) => {
           let result = (<HTMLElement>param?.target)?.outerText;
           result = result.slice(10);
           state.id_clicked = parseInt(result);
-          gl.clearColor(0, 0, 0, 0);
-          gl.clear(gl.COLOR_BUFFER_BIT);
-          for (let i = 0; i < state.shape.length; i++) {
-            if (state.id_clicked !== i) {
-              state.shape[i].draw();
-            }
-          }
+          this.redraw(state, gl);
         };
         body.innerHTML = `Object ke-${i}`;
         li.appendChild(body);

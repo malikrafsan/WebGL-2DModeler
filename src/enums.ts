@@ -16,3 +16,11 @@ const SHAPE_TYPE = {
 } as const;
 
 type SHAPE_TYPES = typeof SHAPE_TYPE[keyof typeof SHAPE_TYPE];
+
+const FEATURE_MODES = {
+  General: "General",
+  Translasi: "Translasi",
+  Dilatasi: "Dilatasi",
+} as const;
+
+type FEATURE_MODE_TYPES = typeof FEATURE_MODES[keyof typeof FEATURE_MODES];

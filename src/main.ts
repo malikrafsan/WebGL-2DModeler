@@ -111,7 +111,7 @@ const initListener = (
 ) => {
   // Melakukan penghapusan seluruh objek yang telah dibuat
   elmts.clear_button.addEventListener("click", function (e) {
-    gl.clearColor(0, 0, 0, 0);
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     state.shape = [];
     state.polygon = [];
@@ -120,7 +120,7 @@ const initListener = (
 
   // Melakukan penghapusan objek terbaru yang telah dibuat
   elmts.pop_button.addEventListener("click", function (e) {
-    gl.clearColor(0, 0, 0, 0);
+    gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     state.shape.pop();
     for (let i = 0; i < state.shape.length; i++) {
@@ -229,9 +229,6 @@ const initListener = (
   });
 
   elmts.canvas.addEventListener("mousemove", function (e) {
-    let transformasi = (<HTMLInputElement>(
-      document.getElementById("transformasi")
-    ))?.value;
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
     let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
     if (state.select_mode) {
@@ -261,7 +258,10 @@ const initListener = (
       }
     } else if (state.id_clicked === -1 && state.is_clicked) {
       createShape(state.x_awal, state.y_awal, x, y, gl, false, elmts, state);
-    } else if (state.id_clicked !== -1) {
+    } else if (state.id_clicked !== -1 && (
+      elmts.featureModeSelect.value === FEATURE_MODES.Translasi ||
+      elmts.featureModeSelect.value === FEATURE_MODES.Dilatasi
+    )) {
       // Fungsi untuk dilatasi dan translasi
       let shape_clicked = state.shape[state.id_clicked];
       let min_jarak_x = 2;
@@ -295,17 +295,17 @@ const initListener = (
 
       // Proses transformasi geometri
       for (let i = 0; i < shape_clicked.vertices.length; i++) {
-        if (transformasi === "translasi") {
+        if (elmts.featureModeSelect.value === FEATURE_MODES.Translasi) {
           shape_clicked.vertices[i].x =
             shape_clicked.vertices[i].x - min_jarak_x;
           shape_clicked.vertices[i].y =
             shape_clicked.vertices[i].y - min_jarak_y;
-        } else if (transformasi === "dilatasi") {
+        } else if (elmts.featureModeSelect.value === FEATURE_MODES.Dilatasi) {
           shape_clicked.vertices[i].x = shape_clicked.vertices[i].x * persen_y;
           shape_clicked.vertices[i].y = shape_clicked.vertices[i].y * persen_y;
         }
       }
-      gl.clearColor(0, 0, 0, 0);
+      gl.clearColor(1.0, 1.0, 1.0, 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       for (let i = 0; i < state.shape.length; i++) {
         if (i !== state.id_clicked) {
