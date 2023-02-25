@@ -10,70 +10,69 @@
 </head>
 
 <body>
-    <div id="helpmodal" class="modal">
-        <div class="modal-content">
-          <span class="modal-close">&times;</span>
- 
-            
-        </div>
-    </div>
-    <div class="flex">
-        <div class="container-card">
-            <ul id="card">
+    <div class="grid-container">
+        <div class="grid-item center">
+            <ul class="column-scroll" style="height:600px" id="card">
                 <!-- <p class="judul-card">Polygon 1</p> -->
             </ul>
         </div>
-        <div class="container">
-            <div class="baris">
-                <div class="kolom">
-                    <select id="bentuk">
-                        <option value="persegipanjang">PersegiPanjang</option>
-                        <option value="garis">Garis</option>
-                        <option value="persegi">Persegi</option>
-                        <option value="poligon">Poligon</option>
-                    </select>
+        <div class="grid-item">
+            <div class="grid-item-middle-top">
+                <select id="bentuk">
+                    <option value="persegipanjang">PersegiPanjang</option>
+                    <option value="garis">Garis</option>
+                    <option value="persegi">Persegi</option>
+                    <option value="poligon">Poligon</option>
+                </select>
+
                     <select id="feature_mode">
                     </select>
-                    <input type="number" value="5" min="3" max="100" id="sisi" hidden />
-                    <input type="color" id="color_picker" value="#000000">
-                    <input type="checkbox" id="fill" text="fill">
-                    <label>Fill</label>
-                    <button id="pop">Pop</button>
-                    <button id="clear">Clear</button>
-                    <button id="select">Select Corner</button>
-                    <button id="help">Help</button>
-                </div>
+                <!-- <select id="transformasi">
+                    <option value="translasi">Translasi</option>
+                    <option value="dilatasi">Dilatasi</option>
+                </select> -->
             </div>
-            <div class="baris">
-                <div class="kolom">
-                    <button id="changecolor">Change color: <span>OFF</span></button>
-                    <button id="resize">Resize Mode: <span>OFF</span></button>
-                </div>
+
+            <div class="grid-item-middle-middle">
+                <canvas id="canvas" width="500" height="500"></canvas>
             </div>
-            <div class="baris">
-                <div class="kolom">
-                    <canvas id="canvas" width="500" height="500"></canvas>
-                </div>
-            </div>
-            <div class="baris">
-                <div class="kolom">
-                    Current file: <span id="current_file">-</span>
-                </div>
-                <div class="kolom">
-                    <button id="load">Load</button>
-                    <button id="save">Save</button>
+
+            <div class="grid-item-middle-bottom">
+                <div class="baris">
+                    <div class="kolom">
+                        Current file: <span id="current_file">-</span>
+                    </div>
+                    <div class="kolom">
+                        <button id="load">Load</button>
+                        <button id="save">Save</button>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="grid-item">
+            <h2 class="spacing">More Actions</h2>
+            <div class="grid-container-row"  id="functionals" >
+                <div class="grid-item spacing">
+                    <input type="color" id="color_picker" value="#000000">
+                    <input type="checkbox" id="fill" text="fill" checked>
+                    <label>Fill</label>
+                </div>
+                <select class="grid-item spacing" name="mode" id="select-mode"></select>
+                <button class="grid-item spacing" id="pop">Pop</button>
+                <button class="grid-item spacing" id="clear">Clear</button>
+                <button class="grid-item spacing toggling" id="select">Select Corner</button>
+                
+            </div>  
+        </div>
     </div>
-    <script src="./constant.js"></script>
-    <script src="./enums.js" ></script>
-    <script src="./globals.js" ></script>
-    <script src="./models.js" ></script>
-    <script src="./struct.js" ></script>
-    <script src="./utils.js" ></script>
-    <script src="./renderer.js" ></script>
-    <script src="./main.js" ></script>
-</body>
 
+    <script src="./const.js"></script>
+    <script src="./enums.js"></script>
+    <script src="./globals.js"></script>
+    <script src="./models.js"></script>
+    <script src="./struct.js"></script>
+    <script src="./utils.js"></script>
+    <script src="./renderer.js"></script>
+    <script src="./main.js"></script>
+</body>
 </html>

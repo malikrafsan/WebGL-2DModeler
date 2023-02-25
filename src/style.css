@@ -6,67 +6,50 @@ body {
     background-color: lightgray;
     color: black;
     margin: auto;
-    max-width: 750px;
-    margin-top: 25px;
 }
 
-/* https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_modal */
-.modal {
-    display: none;
-    /* Hidden by default */
-    position: fixed;
-    /* Stay in place */
-    z-index: 1;
-    /* Sit on top */
-    padding-top: 100px;
-    /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%;
-    /* Full width */
-    height: 100%;
-    /* Full height */
-    overflow: auto;
-    /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0);
-    /* Fallback color */
-    background-color: rgba(0, 0, 0, 0.4);
-    /* Black w/ opacity */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    grid-gap: 10px;
+  }
+
+.grid-container-row {
+    display: grid;
+    grid-template-columns:  1fr;
+}
+  
+.column-scroll {
+    overflow-y: scroll; 
 }
 
-/* Modal Content */
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
+.grid-item {
+padding: 5px;
 }
 
-/* The Close Button */
-.modal-close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+ul {
+    flex-direction: column;
+    display:flex;
+    align-items: center;
 }
 
-.modal-close:hover,
-.modal-close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+  
+.grid-item-middle {
+display: grid;
+grid-template-rows: min-content auto min-content; /* Adjust row heights as needed */
 }
 
-.flex {
-    display: flex;
-    flex-direction: row;
-}
+.grid-item-middle-top {
+    margin-right:10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    }
 
-.container-card {
-    width: max-content;
-    margin-right: 90px;
-    margin-top: 50px;
+.spacing {
+    margin-left: 5%;
+    margin-right: 10%;
+    margin-top:10px;
 }
 
 .card {
@@ -74,12 +57,12 @@ body {
     padding: 0px 35px;
 }
 
-#select {
+.toggling {
     position: relative;
     cursor: pointer;
 }
 
-#select:active,
+.toggling:active,
 .active {
     top: 2px;
     left: 1px;    
