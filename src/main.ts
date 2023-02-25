@@ -237,7 +237,10 @@ const initListener = (
     if (state.select_mode) {
       function matching(shape: Shape2D) {
         return shape.vertices.find((el) => {
-          return Math.abs(el.x - x) < 0.01 && Math.abs(el.y - y) < 0.01;
+          return (
+            Math.abs(el.x - x) < NEAR_POINT_THRESHOLD &&
+            Math.abs(el.y - y) < NEAR_POINT_THRESHOLD
+          );
         });
       }
       var findMatch = state.shape.find(matching);
