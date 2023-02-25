@@ -1,10 +1,6 @@
 class Renderer {
   // A user-defined function to create and compile shaders
-  private initShader(
-    type: "VERTEX_SHADER" | "FRAGMENT_SHADER",
-    source: string,
-    gl: WebGLRenderingContext
-  ) {
+  private initShader(type: "VERTEX_SHADER" | "FRAGMENT_SHADER", source: string, gl: WebGLRenderingContext) {
     const shader = gl.createShader(gl[type]);
 
     if (!shader) {
@@ -16,11 +12,7 @@ class Renderer {
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      throw new Error(
-        `An error occurred compiling the shaders: ${gl.getShaderInfoLog(
-          shader
-        )}`
-      );
+      throw new Error(`An error occurred compiling the shaders: ${gl.getShaderInfoLog(shader)}`);
     }
 
     return shader;
@@ -92,24 +84,10 @@ class Renderer {
     const positionAttrLocation = gl.getAttribLocation(program, "vertPosition");
     const colorAttrLocation = gl.getAttribLocation(program, "vertColor");
 
-    gl.vertexAttribPointer(
-      positionAttrLocation,
-      2,
-      gl.FLOAT,
-      false,
-      5 * Float32Array.BYTES_PER_ELEMENT,
-      0
-    );
+    gl.vertexAttribPointer(positionAttrLocation, 2, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 0);
 
-    gl.vertexAttribPointer(
-      colorAttrLocation,
-      3,
-      gl.FLOAT,
-      false,
-      5 * Float32Array.BYTES_PER_ELEMENT,
-      2 * Float32Array.BYTES_PER_ELEMENT
-    );
-    
+    gl.vertexAttribPointer(colorAttrLocation, 3, gl.FLOAT, false, 5 * Float32Array.BYTES_PER_ELEMENT, 2 * Float32Array.BYTES_PER_ELEMENT);
+
     gl.enableVertexAttribArray(positionAttrLocation);
     gl.enableVertexAttribArray(colorAttrLocation);
     gl.useProgram(program);
@@ -118,16 +96,14 @@ class Renderer {
   }
 
   // Fungsi untuk melakukan render ulang data yang hendak ditampilkan pada kiri canvas
-  public render(
-    elmts: ElementContainer,
-    state: WorldState,
-    gl: WebGLRenderingContext
-  ) {
+  public render(elmts: ElementContainer, state: WorldState, gl: WebGLRenderingContext) {
     const list = document.createDocumentFragment();
 
-    if (elmts.ul_data && elmts.ul_data.lastChild && gl) {
-      while (elmts.ul_data.firstChild) {
-        elmts.ul_data.removeChild(elmts.ul_data.lastChild);
+    if (elmts.ul_data && gl) {
+      if (elmts.ul_data.lastChild) {
+        while (elmts.ul_data.firstChild) {
+          elmts.ul_data.removeChild(elmts.ul_data.lastChild);
+        }
       }
       state.shape.map((data, i) => {
         let li = document.createElement("li");
