@@ -44,7 +44,7 @@ class Vertex {
 
   public x: number;
   public y: number;
-  protected c: Color;
+  public c: Color;
   protected id: number;
   protected gl: WebGLRenderingContext;
 
@@ -69,12 +69,7 @@ class Shape2D {
   protected shapeType: SHAPE_TYPES;
   protected filled: boolean;
 
-  constructor(
-    vertices: Vertex[],
-    gl: WebGLRenderingContext,
-    shapeType: SHAPE_TYPES,
-    filled: boolean
-  ) {
+  constructor(vertices: Vertex[], gl: WebGLRenderingContext, shapeType: SHAPE_TYPES, filled: boolean) {
     this.id = Shape2D.counter++;
     this.vertices = vertices;
     this.gl = gl;
@@ -169,13 +164,7 @@ class Polygon extends Shape2D {
       hull.push(this.vertices[p]);
       q = (p + 1) % this.vertices.length;
       for (let i = 0; i < this.vertices.length; i++) {
-        if (
-          this.orientation(
-            this.vertices[p],
-            this.vertices[i],
-            this.vertices[q]
-          ) == 2
-        ) {
+        if (this.orientation(this.vertices[p], this.vertices[i], this.vertices[q]) == 2) {
           q = i;
         }
       }
@@ -186,12 +175,7 @@ class Polygon extends Shape2D {
 }
 
 class Circle extends Shape2D {
-  constructor(
-    x: number,
-    y: number,
-    gl: WebGLRenderingContext,
-    filled: boolean
-  ) {
+  constructor(x: number, y: number, gl: WebGLRenderingContext, filled: boolean) {
     var vertexlingkaran: Vertex[] = [];
     let steps = 10;
     let rad = 0.02;
@@ -199,12 +183,7 @@ class Circle extends Shape2D {
     let doublePI = 2 * Math.PI;
 
     for (var i = 0; i < numberOfVertices; i++) {
-      var vertex = new Vertex(
-        x + rad * Math.cos((i * doublePI) / steps),
-        y + rad * Math.sin((i * doublePI) / steps),
-        new Color(20, 20, 20),
-        gl
-      );
+      var vertex = new Vertex(x + rad * Math.cos((i * doublePI) / steps), y + rad * Math.sin((i * doublePI) / steps), new Color(20, 20, 20), gl);
       vertexlingkaran.push(vertex);
     }
     super(vertexlingkaran, gl, SHAPE_TYPE.LINGKARAN, filled);

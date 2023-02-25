@@ -11,6 +11,8 @@ class WorldState {
   public counter = 0; // untuk menghilangkan titik pada shape yang diselect
   public x_awal = -1;
   public y_awal = -1;
+  public delete_selected = false;
+  public add_selected = false;
   public featureMode: FEATURE_MODE_TYPES = FEATURE_MODES.General; // untuk mengetahui mode yang sedang aktif
 }
 
@@ -92,6 +94,6 @@ class ElementContainer {
       option.value = key;
       option.innerText = key;
       this.featureModeSelect.appendChild(option);
-    })
+    });
   }
 }
