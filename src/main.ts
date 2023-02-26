@@ -399,7 +399,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
       if (findMatch && state.counter === 0) {
         let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
         let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
-        let lingkaran = new Circle(x, y, gl, elmts.fill_btn.checked);
+        let lingkaran = new Circle(x, y, gl, new Color(0.5, 0.5, 0.5));
         state.counter++;
         state.shape.push(lingkaran);
         renderer.redraw(state, gl);
