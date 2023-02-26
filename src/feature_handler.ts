@@ -90,7 +90,7 @@ class ConstraintMoveVertexHandler implements FeatureHandler {
       const scale = (flip * distNewVertex) / distOldVertex;
 
       movedShape.scale(farthestVertex, scale);
-      renderer.redraw(this.state, this.gl);
+      renderer.redraw(this.state, this.gl, this.elmts);
     } else if (movedShape instanceof Line) {
       const farthestVertex = movedShape.vertices[(idxMovedVertex + 1) % 2];
       const distNewVertex = calculateDist(
@@ -112,7 +112,7 @@ class ConstraintMoveVertexHandler implements FeatureHandler {
       const scale = (flip * distNewVertex) / distOldVertex;
 
       movedShape.scale(farthestVertex, scale);
-      renderer.redraw(this.state, this.gl);
+      renderer.redraw(this.state, this.gl, this.elmts);
     } else if (movedShape instanceof Polygon) {
       const farthestVertex = movedShape.vertices[idxRefVertex];
       const distNewVertex = calculateDist(
@@ -134,7 +134,7 @@ class ConstraintMoveVertexHandler implements FeatureHandler {
       const scale = (flip * distNewVertex) / distOldVertex;
 
       movedShape.scale(farthestVertex, scale);
-      renderer.redraw(this.state, this.gl);
+      renderer.redraw(this.state, this.gl, this.elmts);
     }
   }
 
@@ -190,7 +190,7 @@ class FreeMoveVertexHandler implements FeatureHandler {
     movedVertex.x = x;
     movedVertex.y = y;
 
-    renderer.redraw(this.state, this.gl);
+    renderer.redraw(this.state, this.gl, this.elmts);
   }
 
   onMouseUp(event: MouseEvent) {
@@ -228,7 +228,7 @@ class ChangeColorVertexHandler implements FeatureHandler {
 
     const vertex = shapeVertex.shape.vertices[shapeVertex.idxVertex];
     vertex.changeColor(Color.fromHex(this.elmts.color_picker.value));
-    renderer.redraw(this.state, this.gl);
+    renderer.redraw(this.state, this.gl, this.elmts);
   }
 
   onMouseMove(event: MouseEvent) {
@@ -269,7 +269,7 @@ class LockingVertexPositionHandler implements FeatureHandler{
 
     const vertex = shapeVertex.shape.vertices[shapeVertex.idxVertex];
     vertex.lockUnlockPosition();
-    renderer.redraw(this.state, this.gl);
+    renderer.redraw(this.state, this.gl, this.elmts);
   }
 
   onMouseMove(event: MouseEvent) {
@@ -310,7 +310,7 @@ class LockingVertexColorHandler implements FeatureHandler {
 
     const vertex = shapeVertex.shape.vertices[shapeVertex.idxVertex];
     vertex.lockUnlockColor();
-    renderer.redraw(this.state, this.gl);
+    renderer.redraw(this.state, this.gl, this.elmts);
   }
 
   onMouseMove(event: MouseEvent) {}
@@ -379,7 +379,7 @@ class RotateShapeHandler implements FeatureHandler {
     const flagClockwise = this.elmts.rotateClockwiseBtn.checked ? -1 : 1;
     const angleDeg = (flagClockwise * (angle * 180)) / Math.PI / BUMPER_ROTATOR;
     movedShape.rotate(angleDeg);
-    renderer.redraw(this.state, this.gl);
+    renderer.redraw(this.state, this.gl, this.elmts);
   }
 
   onMouseUp(event: MouseEvent) {
@@ -471,7 +471,7 @@ class ShearHandler implements FeatureHandler {
       refVertex.y += deltaY;
     }
 
-    renderer.redraw(this.state, this.gl);
+    renderer.redraw(this.state, this.gl, this.elmts);
   }
 
   onMouseUp(event: MouseEvent) {
