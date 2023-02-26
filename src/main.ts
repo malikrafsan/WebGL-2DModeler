@@ -185,6 +185,18 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
           if (state.add_selected) {
             button_add.click();
           }
+          if (state.polygon.length > 2) {
+            // Memastikan sisi poligon setidaknya 3 sisi
+            let poligon = new Polygon(state.polygon, gl, elmts.fill_btn.checked);
+            poligon.convexHull();
+            state.shape.push(poligon);
+            renderer.render(elmts, state, gl);
+            state.polygon = [];
+            state.n_sisi = 0;
+            renderer.redraw(state, gl);
+          } else {
+            state.polygon = [];
+          }
         });
 
         button_add.addEventListener("click", function (e) {
@@ -192,6 +204,18 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
           button_add?.classList.toggle("active");
           if (state.delete_selected) {
             button_delete.click();
+          }
+          if (state.polygon.length > 2) {
+            // Memastikan sisi poligon setidaknya 3 sisi
+            let poligon = new Polygon(state.polygon, gl, elmts.fill_btn.checked);
+            poligon.convexHull();
+            state.shape.push(poligon);
+            renderer.render(elmts, state, gl);
+            state.polygon = [];
+            state.n_sisi = 0;
+            renderer.redraw(state, gl);
+          } else {
+            state.polygon = [];
           }
         });
         functionals.appendChild(button_delete);
@@ -249,14 +273,13 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
             }
             renderer.redraw(state, gl);
           }
-        } else if (state.add_selected == true) {
+        } else if (state.add_selected == true && state.polygon.length == 0) {
           let polygon_shape = filterShape(state, "Polygon");
           if (polygon_shape.length > 0 && !!polygon_shape) {
             const found_nearest = findNearestVertexShapes(x, y, polygon_shape);
             if (found_nearest) {
               const nearest_position = findClosestPairVertexByIndex(found_nearest.vertex_index, found_nearest.shape);
               if (nearest_position?.vertex1 != null && nearest_position?.vertex2 != null) {
-                state.shape.splice(state.shape.indexOf(found_nearest.shape), 1);
                 let newPoligon = [];
                 if (nearest_position.vertex2 - nearest_position.vertex1 === 1) {
                   for (let i = 0; i < found_nearest.shape.vertices.length; i++) {
@@ -273,8 +296,11 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
                     }
                   }
                 }
+                console.log(newPoligon);
+                console.log(newPoligon.length);
                 let poligon = new Polygon(newPoligon, gl, elmts.fill_btn.checked);
                 poligon.convexHull();
+                state.shape.splice(state.shape.indexOf(found_nearest.shape), 1);
                 state.shape.push(poligon);
                 renderer.render(elmts, state, gl);
                 renderer.redraw(state, gl);
@@ -317,7 +343,6 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
       case FEATURE_MODES.ChangeColorShape:
         return;
     }
-
 
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
     let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
