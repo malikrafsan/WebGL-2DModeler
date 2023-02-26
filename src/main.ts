@@ -250,6 +250,8 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         return;
       case FEATURE_MODES.LockingVertexColor:
         return;
+      case FEATURE_MODES.RotateShape:
+        return;
     }
 
     let type = (<HTMLInputElement>document.getElementById("bentuk"))?.value;
@@ -343,11 +345,16 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         handler.changeColorVertex.onMouseMove(e);
         return;
       case FEATURE_MODES.ChangeColorShape:
+        handler.changeColorVertex.onMouseMove(e);
         return;
       case FEATURE_MODES.LockingVertexPosition:
+        handler.lockingVertexPosition.onMouseMove(e);
         return;
       case FEATURE_MODES.LockingVertexColor:
+        handler.lockingVertexColor.onMouseMove(e);
         return;
+      case FEATURE_MODES.RotateShape:
+        handler.rotateShape.onMouseMove(e);
     }
 
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
@@ -454,6 +461,9 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
       case FEATURE_MODES.LockingVertexColor:
         handler.lockingVertexColor.onMouseDown(e);
         return;
+      case FEATURE_MODES.RotateShape:
+        handler.rotateShape.onMouseDown(e);
+        return;
     }
 
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
@@ -481,10 +491,16 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         handler.changeColorVertex.onMouseUp(e);
         return;
       case FEATURE_MODES.ChangeColorShape:
+        handler.changeColorVertex.onMouseUp(e);
         return;
       case FEATURE_MODES.LockingVertexPosition:
+        handler.lockingVertexPosition.onMouseUp(e);
         return;
       case FEATURE_MODES.LockingVertexColor:
+        handler.lockingVertexColor.onMouseUp(e);
+        return;
+      case FEATURE_MODES.RotateShape:
+        handler.rotateShape.onMouseUp(e);
         return;
     }
 

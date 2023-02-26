@@ -1,1 +1,3 @@
 const NEAR_POINT_THRESHOLD = 0.1;
+const BUMPER_ROTATOR = 1000;
+

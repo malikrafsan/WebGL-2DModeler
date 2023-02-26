@@ -18,14 +18,14 @@
         </div>
         <div class="grid-item">
             <div class="grid-item-middle-top">
-                <select class = "select-dropdown" id="bentuk">
+                <select class="select-dropdown" id="bentuk">
                     <option value="persegipanjang">PersegiPanjang</option>
                     <option value="garis">Garis</option>
                     <option value="persegi">Persegi</option>
                     <option value="poligon">Poligon</option>
                 </select>
 
-                    <select class="select-dropdown" id="feature_mode">
+                <select class="select-dropdown" id="feature_mode">
                     </select>
                 <!-- <select id="transformasi">
                     <option value="translasi">Translasi</option>
@@ -51,7 +51,7 @@
         </div>
         <div class="grid-item">
             <h2 class="spacing">More Actions</h2>
-            <div class="grid-container-row"  id="functionals" >
+            <div class="grid-container-row" id="functionals">
                 <div class="grid-item spacing customize">
                     <input type="color" id="color_picker" value="#000000">
                     <input type="checkbox" id="fill" text="fill" checked>
@@ -60,8 +60,11 @@
                 <button class="grid-item spacing" id="pop">Pop</button>
                 <button class="grid-item spacing" id="clear">Clear</button>
                 <button class="grid-item spacing toggling" id="select">Select Corner</button>
-                
-            </div>  
+                <div>
+                    <input class="grid-item spacing" type="checkbox" id="rotate_clockwise" text="Rotate Clockwise" checked>
+                    <label>Rotate Clockwise</label>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -76,4 +79,5 @@
     <script src="./renderer.js"></script>
     <script src="./main.js"></script>
 </body>
+
 </html>

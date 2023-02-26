@@ -42,6 +42,7 @@ class ElementContainer {
   public readonly fill_btn;
   public readonly color_picker;
   public readonly featureModeSelect;
+  public readonly rotateClockwiseBtn;
 
   constructor() {
     const canvas = document.querySelector("#canvas");
@@ -56,6 +57,7 @@ class ElementContainer {
     const fill_btn = document.querySelector("#fill");
     const color_picker = document.querySelector("#color_picker");
     const featureModeSelect = document.querySelector("#feature_mode");
+    const rotateClockwiseBtn = document.querySelector("#rotate_clockwise");
 
     if (!(canvas instanceof HTMLCanvasElement)) {
       throw new Error("No html canvas element.");
@@ -85,6 +87,10 @@ class ElementContainer {
       throw new Error("No html select element.");
     }
 
+    if (!(rotateClockwiseBtn instanceof HTMLInputElement)) {
+      throw new Error("No html input element.");
+    }
+
     this.canvas = canvas;
     this.clear_button = clear_button;
     this.pop_button = pop_button;
@@ -97,6 +103,7 @@ class ElementContainer {
     this.fill_btn = fill_btn;
     this.color_picker = color_picker;
     this.featureModeSelect = featureModeSelect;
+    this.rotateClockwiseBtn = rotateClockwiseBtn;
 
     this.onConstruct();
   }
@@ -117,6 +124,7 @@ class Handler {
   public readonly changeColorVertex: ChangeColorVertexHandler;
   public readonly lockingVertexPosition: LockingVertexPositionHandler;
   public readonly lockingVertexColor: LockingVertexColorHandler;
+  public readonly rotateShape: RotateShapeHandler;
 
   constructor(
     elmts: ElementContainer,
@@ -136,5 +144,6 @@ class Handler {
       gl
     );
     this.lockingVertexColor = new LockingVertexColorHandler(elmts, state, gl);
+    this.rotateShape = new RotateShapeHandler(elmts, state, gl);
   }
 }

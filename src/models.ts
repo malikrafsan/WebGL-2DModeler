@@ -119,22 +119,59 @@ class Vertex {
   lockUnlockColor() {
     this.isLockedColor = !this.isLockedColor;
   }
+
+  rotate(xRef: number, yRef: number, angle: number) {
+    const x = this.x - xRef;
+    const y = this.y - yRef;
+
+    this.x = xRef + x * Math.cos(angle) - y * Math.sin(angle);
+    this.y = yRef + x * Math.sin(angle) + y * Math.cos(angle);
+  }
 }
 
 class Shape2D {
   protected static counter: number = 0;
-  public vertices: Vertex[];
+  public _vertices: Vertex[];
   protected id: number;
   protected gl: WebGLRenderingContext;
   protected shapeType: SHAPE_TYPES;
   public filled: boolean;
+  public centerPoint: {
+    x: number;
+    y: number;
+  }
 
   constructor(vertices: Vertex[], gl: WebGLRenderingContext, shapeType: SHAPE_TYPES, filled: boolean) {
     this.id = Shape2D.counter++;
-    this.vertices = vertices;
+    this._vertices = vertices;
     this.gl = gl;
     this.shapeType = shapeType;
     this.filled = filled;
+    this.centerPoint = this.calcCenterPoint();
+  }
+
+  private calcCenterPoint() {
+    let x = 0;
+    let y = 0;
+
+    this.vertices.forEach((v) => {
+      x += v.x;
+      y += v.y;
+    });
+
+    return {
+      x: x / this.vertices.length,
+      y: y / this.vertices.length,
+    }
+  }
+
+  public get vertices(): Vertex[] {
+    return this._vertices;
+  }
+
+  public set vertices(vertices: Vertex[]) {
+    this._vertices = vertices;
+    this.centerPoint = this.calcCenterPoint();
   }
 
   protected materialize(glShape: number): void {
@@ -167,6 +204,12 @@ class Shape2D {
   changeColor(c: Color) {
     this.vertices.forEach((v) => {
       v.changeColor(c.copy());
+    });
+  }
+
+  rotate(angle: number) {
+    this.vertices.forEach((v) => {
+      v.rotate(this.centerPoint.x, this.centerPoint.y, angle);
     });
   }
 }
