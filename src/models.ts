@@ -1,7 +1,7 @@
 class Color {
-  protected r: number;
-  protected g: number;
-  protected b: number;
+  public readonly r: number;
+  public readonly g: number;
+  public readonly b: number;
 
   constructor(r: number, g: number, b: number) {
     this.r = this.normalizeColor(r);
@@ -40,6 +40,14 @@ class Color {
 
   copy() {
     return new Color(this.r, this.g, this.b);
+  }
+
+  flipColor() {
+    return new Color(
+      Math.random(),
+      Math.random(),
+      Math.random(),
+    )
   }
 }
 
@@ -305,7 +313,7 @@ class Polygon extends Shape2D {
 }
 
 class Circle extends Shape2D {
-  constructor(x: number, y: number, gl: WebGLRenderingContext, filled: boolean) {
+  constructor(x: number, y: number, gl: WebGLRenderingContext, color: Color) {
     var vertexlingkaran: Vertex[] = [];
     let steps = 10;
     let rad = 0.02;
@@ -313,10 +321,10 @@ class Circle extends Shape2D {
     let doublePI = 2 * Math.PI;
 
     for (var i = 0; i < numberOfVertices; i++) {
-      var vertex = new Vertex(x + rad * Math.cos((i * doublePI) / steps), y + rad * Math.sin((i * doublePI) / steps), new Color(20, 20, 20), gl);
+      var vertex = new Vertex(x + rad * Math.cos((i * doublePI) / steps), y + rad * Math.sin((i * doublePI) / steps),color, gl);
       vertexlingkaran.push(vertex);
     }
-    super(vertexlingkaran, gl, SHAPE_TYPE.LINGKARAN, filled);
+    super(vertexlingkaran, gl, SHAPE_TYPE.LINGKARAN, true);
   }
 
   draw() {

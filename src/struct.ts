@@ -27,6 +27,7 @@ class WorldState {
   public add_selected = false;
   public featureMode: FEATURE_MODE_TYPES = FEATURE_MODES.General; // untuk mengetahui mode yang sedang aktif
   public featureState: FeatureState = new FeatureState();
+  public circle: Circle | null = null;
 }
 
 class ElementContainer {

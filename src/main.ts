@@ -342,8 +342,15 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
     const found = findVertex(x, y, state);
     if (!found) {
       elmts.canvas.style.cursor = "default";
+      state.circle = null;
+      renderer.redraw(state, gl);
     } else {
       elmts.canvas.style.cursor = "pointer";
+      const vc = found.vertex.c;
+
+      state.circle = new Circle(x, y, gl, vc.flipColor());
+      console.log(state.circle);
+      renderer.redraw(state, gl);
     }
 
     switch (elmts.featureModeSelect.value) {

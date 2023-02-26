@@ -139,5 +139,10 @@ class Renderer {
     for (let i = 0; i < state.shape.length; i++) {
       state.shape[i].draw();
     }
+   
+    if (state.circle) {
+      console.log("circle");
+      state.circle.draw();
+    }
   }
 }
