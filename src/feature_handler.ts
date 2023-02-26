@@ -92,7 +92,6 @@ class ConstraintMoveVertexHandler implements FeatureHandler {
       movedShape.scale(farthestVertex, scale);
       renderer.redraw(this.state, this.gl);
     } else if (movedShape instanceof Line) {
-      // TODO: NOT WORKING
       const farthestVertex = movedShape.vertices[(idxMovedVertex + 1) % 2];
       const distNewVertex = calculateDist(
         x,
@@ -377,13 +376,109 @@ class RotateShapeHandler implements FeatureHandler {
       y: center.y,
     });
 
-    const flagClockwise = this.elmts.rotateClockwiseBtn.checked ? 1 : -1;
+    const flagClockwise = this.elmts.rotateClockwiseBtn.checked ? -1 : 1;
     const angleDeg = (flagClockwise * (angle * 180)) / Math.PI / BUMPER_ROTATOR;
     movedShape.rotate(angleDeg);
     renderer.redraw(this.state, this.gl);
   }
 
   onMouseUp(event: MouseEvent) {
+    this.state.featureState.clear();
+  }
+}
+
+class ShearHandler implements FeatureHandler {
+  private elmts: ElementContainer;
+  private state: WorldState;
+  private gl: WebGLRenderingContext;
+
+  constructor(
+    elmts: ElementContainer,
+    state: WorldState,
+    gl: WebGLRenderingContext
+  ) {
+    this.elmts = elmts;
+    this.state = state;
+    this.gl = gl;
+  }
+
+  onMouseDown(event: MouseEvent) {
+    const x = (event.offsetX / this.elmts.canvas.clientWidth) * 2 - 1;
+    const y = (1 - event.offsetY / this.elmts.canvas.clientHeight) * 2 - 1;
+
+    const shapeVertex = findShapeAndVertex(x, y, this.state);
+    console.log("shapeVertex", "shear", shapeVertex);
+
+    if (!shapeVertex) {
+      this.state.featureState.clear();
+      return;
+    }
+    
+    if (this.state.featureState.selected_shape !== null) {
+      if (this.state.featureState.selected_shape !== shapeVertex.shape) {
+        alert("You can't shear two shapes at the same time. Clearing the selection state");
+        this.state.featureState.clear();
+      }
+
+      this.state.featureState.idxRefVertex = shapeVertex.idxVertex;
+      return;
+    }
+
+    this.state.featureState.selected_shape = shapeVertex.shape;
+    this.state.featureState.idxVertex = shapeVertex.idxVertex;
+  }
+
+  onMouseMove(event: MouseEvent) {
+    const x = (event.offsetX / this.elmts.canvas.clientWidth) * 2 - 1;
+    const y = (1 - event.offsetY / this.elmts.canvas.clientHeight) * 2 - 1;
+
+    const movedShape = this.state.featureState.selected_shape;
+    const idxMovedVertex = this.state.featureState.idxVertex;
+    const idxRefVertex = this.state.featureState.idxRefVertex;
+
+    if (movedShape === null || idxMovedVertex === null || idxRefVertex === null) {
+      return;
+    }
+
+    const vertex = movedShape.vertices[idxRefVertex];
+    const refVertex = movedShape.vertices[idxMovedVertex];
+
+    // const deltaX = x - vertex.x;
+    // const deltaY = y - vertex.y;
+
+    // vertex.x = vertex.x + deltaX;
+    // vertex.y = vertex.y + deltaY;
+
+    // refVertex.x = refVertex.x + deltaX;
+    // refVertex.y = refVertex.y + deltaY;
+
+    const gradien = (vertex.y - refVertex.y) / (vertex.x - refVertex.x);
+
+    console.log("gradien", gradien);
+
+    const deltaX = x - vertex.x;
+    const deltaY = y - vertex.y;
+
+    console.log("deltaX", deltaX);
+    console.log("deltaY", deltaY);
+
+    if (gradien < EPSILON && gradien > -EPSILON) {
+      vertex.x += deltaX;
+      refVertex.x += deltaX;
+    } else if (gradien > 1 / EPSILON || gradien < -1 / EPSILON) {
+      console.log("gradien > 1 / EPSILON");
+      vertex.y += deltaY;
+      refVertex.y += deltaY;
+    }
+
+    renderer.redraw(this.state, this.gl);
+  }
+
+  onMouseUp(event: MouseEvent) {
+    if (this.state.featureState.idxRefVertex === null && this.state.featureState.selected_shape !== null) {
+      return;
+    }
+
     this.state.featureState.clear();
   }
 }

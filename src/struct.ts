@@ -125,6 +125,7 @@ class Handler {
   public readonly lockingVertexPosition: LockingVertexPositionHandler;
   public readonly lockingVertexColor: LockingVertexColorHandler;
   public readonly rotateShape: RotateShapeHandler;
+  public readonly shear: ShearHandler;
 
   constructor(
     elmts: ElementContainer,
@@ -145,5 +146,6 @@ class Handler {
     );
     this.lockingVertexColor = new LockingVertexColorHandler(elmts, state, gl);
     this.rotateShape = new RotateShapeHandler(elmts, state, gl);
+    this.shear = new ShearHandler(elmts, state, gl);
   }
 }
