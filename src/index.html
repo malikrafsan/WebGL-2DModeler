@@ -12,20 +12,20 @@
 <body>
     <div class="grid-container">
         <div class="grid-item center">
-            <ul class="column-scroll" style="height:600px" id="card">
+            <ul class="column-scroll" style="height:775px" id="card">
                 <!-- <p class="judul-card">Polygon 1</p> -->
             </ul>
         </div>
         <div class="grid-item">
             <div class="grid-item-middle-top">
-                <select id="bentuk">
+                <select class = "select-dropdown" id="bentuk">
                     <option value="persegipanjang">PersegiPanjang</option>
                     <option value="garis">Garis</option>
                     <option value="persegi">Persegi</option>
                     <option value="poligon">Poligon</option>
                 </select>
 
-                    <select id="feature_mode">
+                    <select class="select-dropdown" id="feature_mode">
                     </select>
                 <!-- <select id="transformasi">
                     <option value="translasi">Translasi</option>
@@ -34,7 +34,7 @@
             </div>
 
             <div class="grid-item-middle-middle">
-                <canvas id="canvas" width="500" height="500"></canvas>
+                <canvas id="canvas" width="800" height="750"></canvas>
             </div>
 
             <div class="grid-item-middle-bottom">
@@ -52,12 +52,12 @@
         <div class="grid-item">
             <h2 class="spacing">More Actions</h2>
             <div class="grid-container-row"  id="functionals" >
-                <div class="grid-item spacing">
+                <div class="grid-item spacing customize">
                     <input type="color" id="color_picker" value="#000000">
                     <input type="checkbox" id="fill" text="fill" checked>
                     <label>Fill</label>
                 </div>
-                <select class="grid-item spacing" name="mode" id="select-mode"></select>
+                <select class="grid-item spacing select-dropdown" name="mode" id="select-mode"></select>
                 <button class="grid-item spacing" id="pop">Pop</button>
                 <button class="grid-item spacing" id="clear">Clear</button>
                 <button class="grid-item spacing toggling" id="select">Select Corner</button>
