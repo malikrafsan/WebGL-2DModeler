@@ -48,10 +48,11 @@ class Vertex {
 
   public _x: number;
   public _y: number;
-  public c: Color;
+  public _c: Color;
   protected id: number;
   protected gl: WebGLRenderingContext;
-  protected isLocked: boolean;
+  protected isLockedPostion: boolean;
+  protected isLockedColor: boolean;
 
   constructor(x: number, y: number, c: Color, gl: WebGLRenderingContext) {
     this.id = Vertex.counter++;
@@ -59,7 +60,8 @@ class Vertex {
     this._y = y;
     this.c = c;
     this.gl = gl;
-    this.isLocked = false;
+    this.isLockedPostion = false;
+    this.isLockedColor = false;
   }
 
   toArray(): number[] {
@@ -71,7 +73,7 @@ class Vertex {
   }
 
   public set x(x: number) {
-    if (this.isLocked) {
+    if (this.isLockedPostion) {
       return;
     }
 
@@ -83,19 +85,39 @@ class Vertex {
   }
 
   public set y(y: number) {
-    if (this.isLocked) {
+    if (this.isLockedPostion) {
       return;
     }
 
     this._y = y;
   }
 
-  changeColor(c: Color) {
-    this.c = c;
+  public get c(): Color {
+    return this._c;
   }
 
-  lockUnlock() {
-    this.isLocked = !this.isLocked;
+  public set c(c: Color) {
+    this.wrapSetColor(c);
+  }
+
+  private wrapSetColor(c: Color) {
+    if (this.isLockedColor) {
+      return;
+    }
+
+    this._c = c;
+  }
+
+  changeColor(c: Color) {
+    this.wrapSetColor(c);
+  }
+
+  lockUnlockPosition() {
+    this.isLockedPostion = !this.isLockedPostion;
+  }
+
+  lockUnlockColor() {
+    this.isLockedColor = !this.isLockedColor;
   }
 }
 

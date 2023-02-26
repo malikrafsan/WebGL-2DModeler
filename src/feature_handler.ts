@@ -269,7 +269,7 @@ class LockingVertexPositionHandler implements FeatureHandler{
     }
 
     const vertex = shapeVertex.shape.vertices[shapeVertex.idxVertex];
-    vertex.lockUnlock();
+    vertex.lockUnlockPosition();
     renderer.redraw(this.state, this.gl);
   }
 
@@ -280,3 +280,44 @@ class LockingVertexPositionHandler implements FeatureHandler{
     this.state.featureState.clear();
   } 
 }
+
+class LockingVertexColorHandler implements FeatureHandler {
+  private elmts: ElementContainer;
+  private state: WorldState;
+  private gl: WebGLRenderingContext;
+
+  constructor(
+    elmts: ElementContainer,
+    state: WorldState,
+    gl: WebGLRenderingContext
+  ) {
+    this.elmts = elmts;
+    this.state = state;
+    this.gl = gl;
+  }
+
+  onMouseDown(event: MouseEvent) {
+    const x = (event.offsetX / this.elmts.canvas.clientWidth) * 2 - 1;
+    const y = (1 - event.offsetY / this.elmts.canvas.clientHeight) * 2 - 1;
+
+    const shapeVertex = findShapeAndVertex(x, y, this.state);
+    console.log(shapeVertex);
+    console.log("this.state", this.state);
+    console.log("x", x, "y", y);
+
+    if (!shapeVertex) {
+      return;
+    }
+
+    const vertex = shapeVertex.shape.vertices[shapeVertex.idxVertex];
+    vertex.lockUnlockColor();
+    renderer.redraw(this.state, this.gl);
+  }
+
+  onMouseMove(event: MouseEvent) {}
+
+  onMouseUp(event: MouseEvent) {
+    this.state.featureState.clear();
+  }
+}
+

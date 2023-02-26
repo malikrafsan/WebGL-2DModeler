@@ -116,6 +116,7 @@ class Handler {
   public readonly freeMoveVertex: FreeMoveVertexHandler;
   public readonly changeColorVertex: ChangeColorVertexHandler;
   public readonly lockingVertexPosition: LockingVertexPositionHandler;
+  public readonly lockingVertexColor: LockingVertexColorHandler;
 
   constructor(
     elmts: ElementContainer,
@@ -134,5 +135,6 @@ class Handler {
       state,
       gl
     );
+    this.lockingVertexColor = new LockingVertexColorHandler(elmts, state, gl);
   }
 }
