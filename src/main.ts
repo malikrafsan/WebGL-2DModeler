@@ -214,6 +214,8 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
     switch (elmts.featureModeSelect.value) {
       case FEATURE_MODES.ConstraintMoveVertex:
         return;
+      case FEATURE_MODES.FreeMoveVertex:
+        return;
     }
 
     let type = (<HTMLInputElement>document.getElementById("bentuk"))?.value;
@@ -299,6 +301,9 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
     switch (elmts.featureModeSelect.value) {
       case FEATURE_MODES.ConstraintMoveVertex:
         handler.constraintMoveVertex.onMouseMove(e);
+        return;
+      case FEATURE_MODES.FreeMoveVertex:
+        handler.freeMoveVertex.onMouseMove(e);
         return;
     }
 
@@ -393,6 +398,9 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
       case FEATURE_MODES.ConstraintMoveVertex:
         handler.constraintMoveVertex.onMouseDown(e);
         return;
+      case FEATURE_MODES.FreeMoveVertex:
+        handler.freeMoveVertex.onMouseDown(e);
+        return;
     }
 
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
@@ -412,6 +420,9 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
     switch (elmts.featureModeSelect.value) {
       case FEATURE_MODES.ConstraintMoveVertex:
         handler.constraintMoveVertex.onMouseUp(e);
+        return;
+      case FEATURE_MODES.FreeMoveVertex:
+        handler.freeMoveVertex.onMouseUp(e);
         return;
     }
 

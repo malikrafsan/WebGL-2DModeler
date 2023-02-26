@@ -143,3 +143,58 @@ class ConstraintMoveVertexHandler implements FeatureHandler {
     this.state.featureState.clear();
   }
 }
+
+class FreeMoveVertexHandler implements FeatureHandler {
+  private elmts: ElementContainer;
+  private state: WorldState;
+  private gl: WebGLRenderingContext;
+
+  constructor(
+    elmts: ElementContainer,
+    state: WorldState,
+    gl: WebGLRenderingContext
+  ) {
+    this.elmts = elmts;
+    this.state = state;
+    this.gl = gl;
+  }
+
+  onMouseDown(event: MouseEvent) {
+    const x = (event.offsetX / this.elmts.canvas.clientWidth) * 2 - 1;
+    const y = (1 - event.offsetY / this.elmts.canvas.clientHeight) * 2 - 1;
+
+    const shapeVertex = findShapeAndVertex(x, y, this.state);
+    console.log(shapeVertex);
+    console.log("this.state", this.state);
+    console.log("x", x, "y", y);
+
+    if (!shapeVertex) {
+      return;
+    }
+
+    this.state.featureState.selected_shape = shapeVertex.shape;
+    this.state.featureState.idxVertex = shapeVertex.idxVertex;
+  }
+
+  onMouseMove(event: MouseEvent) {
+    const x = (event.offsetX / this.elmts.canvas.clientWidth) * 2 - 1;
+    const y = (1 - event.offsetY / this.elmts.canvas.clientHeight) * 2 - 1;
+
+    const movedShape = this.state.featureState.selected_shape;
+    const idxMovedVertex = this.state.featureState.idxVertex;
+
+    if (!movedShape || !idxMovedVertex) {
+      return;
+    }
+    const movedVertex = movedShape.vertices[idxMovedVertex];
+
+    movedVertex.x = x;
+    movedVertex.y = y;
+    
+    renderer.redraw(this.state, this.gl);
+  }
+
+  onMouseUp(event: MouseEvent) {
+    this.state.featureState.clear();
+  }
+}

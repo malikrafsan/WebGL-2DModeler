@@ -113,6 +113,7 @@ class ElementContainer {
 
 class Handler {
   public readonly constraintMoveVertex: ConstraintMoveVertexHandler;
+  public readonly freeMoveVertex: FreeMoveVertexHandler;
 
   constructor(
     elmts: ElementContainer,
@@ -124,5 +125,6 @@ class Handler {
       state,
       gl
     );
+    this.freeMoveVertex = new FreeMoveVertexHandler(elmts, state, gl);
   }
 }
