@@ -37,6 +37,10 @@ class Color {
 
     return new Color(r, g, b);
   }
+
+  copy() {
+    return new Color(this.r, this.g, this.b);
+  }
 }
 
 class Vertex {
@@ -105,6 +109,12 @@ class Shape2D {
     this.vertices.forEach((v) => {
       v.x = ref.x + (v.x - ref.x) * scale;
       v.y = ref.y + (v.y - ref.y) * scale;
+    });
+  }
+
+  changeColor(c: Color) {
+    this.vertices.forEach((v) => {
+      v.changeColor(c.copy());
     });
   }
 }

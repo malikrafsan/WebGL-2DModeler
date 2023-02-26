@@ -112,6 +112,14 @@ class Renderer {
           let result = (<HTMLElement>param?.target)?.outerText;
           result = result.slice(10);
           state.id_clicked = parseInt(result);
+
+          switch (elmts.featureModeSelect.value) {
+            case FEATURE_MODES.ChangeColorShape:
+              state.shape[state.id_clicked].changeColor(
+                Color.fromHex(elmts.color_picker.value),
+              )
+          }
+
           this.redraw(state, gl);
         };
         body.innerHTML = `Object ke-${i}`;
