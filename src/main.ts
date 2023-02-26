@@ -357,7 +357,6 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         handler.changeColorVertex.onMouseMove(e);
         return;
       case FEATURE_MODES.ChangeColorShape:
-        handler.changeColorVertex.onMouseMove(e);
         return;
       case FEATURE_MODES.LockingVertexPosition:
         handler.lockingVertexPosition.onMouseMove(e);
@@ -507,7 +506,6 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         handler.changeColorVertex.onMouseUp(e);
         return;
       case FEATURE_MODES.ChangeColorShape:
-        handler.changeColorVertex.onMouseUp(e);
         return;
       case FEATURE_MODES.LockingVertexPosition:
         handler.lockingVertexPosition.onMouseUp(e);
