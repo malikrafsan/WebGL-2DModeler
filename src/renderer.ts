@@ -109,9 +109,8 @@ class Renderer {
         let li = document.createElement("li");
         let body = document.createElement("p");
         body.onclick = (param) => {
-          let result = (<HTMLElement>param?.target)?.outerText;
-          result = result.slice(10);
-          state.id_clicked = parseInt(result);
+          const result = (<HTMLElement>param?.target)?.getAttribute("objId");
+          state.id_clicked = parseInt(result!);
 
           switch (elmts.featureModeSelect.value) {
             case FEATURE_MODES.ChangeColorShape:
@@ -122,8 +121,10 @@ class Renderer {
 
           this.redraw(state, gl);
         };
-        body.innerHTML = `Object ke-${i}`;
+        body.innerHTML = `${data.constructor.name} #${i+1}`;
+        body.setAttribute("objId", i.toString());
         body.style.cursor = "pointer";
+        body.className = "list-group-object";
         li.appendChild(body);
         list.appendChild(li);
       });

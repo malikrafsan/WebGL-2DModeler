@@ -39,6 +39,7 @@ ul {
     flex-direction: column;
     display:flex;
     align-items: center;
+    list-style-type: none;
 }
 
 .grid-item-middle {
@@ -103,4 +104,13 @@ button {
     font-weight: 500;
     padding:5px;
     border-radius: 4px;
+}
+
+.list-group-object {
+    font-family: var(--font-text);
+    font-size: 20px;
+    font-weight: 500;
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #FFFFFF;
 }

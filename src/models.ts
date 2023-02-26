@@ -132,9 +132,9 @@ class Vertex {
 class Shape2D {
   protected static counter: number = 0;
   public _vertices: Vertex[];
-  protected id: number;
+  public readonly id: number;
   protected gl: WebGLRenderingContext;
-  protected shapeType: SHAPE_TYPES;
+  public readonly shapeType: SHAPE_TYPES;
   public filled: boolean;
   public centerPoint: {
     x: number;
