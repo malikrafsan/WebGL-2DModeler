@@ -132,6 +132,8 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
             // Membuat shapes baru berdasarkan bentuk yang telah disimpan
             if (data.shape === "Square") {
               return new Square(vertex_data, gl, data.filled);
+            } else if (data.shape === "Rectangle") {
+              return new Rectangle(vertex_data, gl, data.filled);
             } else if (data.shape === "Polygon") {
               return new Polygon(vertex_data, gl, data.filled);
             } else if (data.shape === "Line") {
