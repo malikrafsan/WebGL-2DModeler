@@ -58,7 +58,7 @@ class Vertex {
     this.id = Vertex.counter++;
     this._x = x;
     this._y = y;
-    this.c = c;
+    this._c = c;
     this.gl = gl;
     this.isLockedPostion = false;
     this.isLockedColor = false;
