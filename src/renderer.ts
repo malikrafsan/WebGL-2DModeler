@@ -123,6 +123,7 @@ class Renderer {
           this.redraw(state, gl);
         };
         body.innerHTML = `Object ke-${i}`;
+        body.style.cursor = "pointer";
         li.appendChild(body);
         list.appendChild(li);
       });
