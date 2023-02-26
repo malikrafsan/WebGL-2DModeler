@@ -336,6 +336,16 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
   });
 
   elmts.canvas.addEventListener("mousemove", function (e) {
+    let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
+    let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
+
+    const found = findVertex(x, y, state);
+    if (!found) {
+      elmts.canvas.style.cursor = "default";
+    } else {
+      elmts.canvas.style.cursor = "pointer";
+    }
+
     switch (elmts.featureModeSelect.value) {
       case FEATURE_MODES.ConstraintMoveVertex:
         handler.constraintMoveVertex.onMouseMove(e);
@@ -362,9 +372,6 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         handler.shear.onMouseMove(e);
         return;
     }
-
-    let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
-    let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
 
     if (state.add_selected || state.delete_selected) {
       const found = findVertex(x, y, state);
