@@ -216,6 +216,8 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         return;
       case FEATURE_MODES.FreeMoveVertex:
         return;
+      case FEATURE_MODES.ChangeColorVertex:
+        return;
     }
 
     let type = (<HTMLInputElement>document.getElementById("bentuk"))?.value;
@@ -304,6 +306,9 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         return;
       case FEATURE_MODES.FreeMoveVertex:
         handler.freeMoveVertex.onMouseMove(e);
+        return;
+      case FEATURE_MODES.ChangeColorVertex:
+        handler.changeColorVertex.onMouseMove(e);
         return;
     }
 
@@ -401,6 +406,9 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
       case FEATURE_MODES.FreeMoveVertex:
         handler.freeMoveVertex.onMouseDown(e);
         return;
+      case FEATURE_MODES.ChangeColorVertex:
+        handler.changeColorVertex.onMouseDown(e);
+        return;
     }
 
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
@@ -423,6 +431,9 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         return;
       case FEATURE_MODES.FreeMoveVertex:
         handler.freeMoveVertex.onMouseUp(e);
+        return;
+      case FEATURE_MODES.ChangeColorVertex:
+        handler.changeColorVertex.onMouseUp(e);
         return;
     }
 

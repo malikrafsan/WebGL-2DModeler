@@ -114,6 +114,7 @@ class ElementContainer {
 class Handler {
   public readonly constraintMoveVertex: ConstraintMoveVertexHandler;
   public readonly freeMoveVertex: FreeMoveVertexHandler;
+  public readonly changeColorVertex: ChangeColorVertexHandler;
 
   constructor(
     elmts: ElementContainer,
@@ -126,5 +127,6 @@ class Handler {
       gl
     );
     this.freeMoveVertex = new FreeMoveVertexHandler(elmts, state, gl);
+    this.changeColorVertex = new ChangeColorVertexHandler(elmts, state, gl);
   }
 }

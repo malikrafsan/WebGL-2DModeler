@@ -23,6 +23,7 @@ const FEATURE_MODES = {
   Dilatasi: "Dilatasi",
   ConstraintMoveVertex: "ConstraintMoveVertex",
   FreeMoveVertex: "FreeMoveVertex",
+  ChangeColorVertex: "ChangeColorVertex",
 } as const;
 
 type FEATURE_MODE_TYPES = typeof FEATURE_MODES[keyof typeof FEATURE_MODES];

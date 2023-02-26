@@ -59,6 +59,10 @@ class Vertex {
   toArray(): number[] {
     return [this.x, this.y, ...this.c.toArray()];
   }
+
+  changeColor(c: Color) {
+    this.c = c;
+  }
 }
 
 class Shape2D {
