@@ -108,6 +108,10 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
   // Melakukan save data yang telah dibuat
   elmts.save_button?.addEventListener("click", function (e) {
     save(state.shape, "shape.json");
+    let modal = document.getElementById("statusmodal");
+    let message = document.getElementById("status");
+    modal!!.style.display = "block";
+    message!.innerHTML = "Data berhasil disimpan";
   });
 
   // Melakukan load data yang telah disimpan
@@ -146,6 +150,10 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
           renderer.redraw(state, gl, elmts);
         };
         elmts.file_name_span!.textContent = file[0].name;
+        let modal = document.getElementById("statusmodal");
+        let message = document.getElementById("status");
+        modal!!.style.display = "block";
+        message!.innerHTML = "Data berhasil Load!!";
       }
     };
   });

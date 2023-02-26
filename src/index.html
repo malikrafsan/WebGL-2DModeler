@@ -10,6 +10,13 @@
 </head>
 
 <body>
+    <div id="statusmodal" class="modal">
+        <div class="modal-content">
+          <span class="modal-close">&times;</span>
+          <h3 id="status">Successfully Saved</h3>
+        </div>
+    </div>
+
     <div class="grid-container">
         <div class="grid-item center">
             <ul class="column-scroll" style="height:775px" id="card">
@@ -77,6 +84,20 @@
     <script src="./feature_handler.js"></script>
     <script src="./renderer.js"></script>
     <script src="./main.js"></script>
+
+    <script>
+        let modal = document.getElementById("statusmodal");
+
+        document.querySelector(".modal-close").addEventListener("click", (e) => {
+            modal.style.display = "none";
+        });
+        window.addEventListener("click", (e) => {
+            if (e.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+    </script>
+
 </body>
 
 </html>
