@@ -96,6 +96,13 @@ class Shape2D {
   draw() {
     throw new Error("Method not implemented.");
   }
+
+  scale(ref: Vertex, scale: number) {
+    this.vertices.forEach((v) => {
+      v.x = ref.x + (v.x - ref.x) * scale;
+      v.y = ref.y + (v.y - ref.y) * scale;
+    });
+  }
 }
 
 class Square extends Shape2D {
@@ -110,6 +117,20 @@ class Square extends Shape2D {
     this.materialize(this.filled ? this.gl.TRIANGLE_FAN : this.gl.LINE_LOOP);
   }
 }
+
+class Rectangle extends Shape2D {
+  constructor(vertices: Vertex[], gl: WebGLRenderingContext, filled: boolean) {
+    if (vertices.length !== 4) {
+      throw new Error("A square must have 4 vertices.");
+    }
+    super(vertices, gl, SHAPE_TYPE.PERSEGI_PANJANG, filled);
+  }
+
+  draw() {
+    this.materialize(this.filled ? this.gl.TRIANGLE_FAN : this.gl.LINE_LOOP);
+  }
+}
+
 
 class Line extends Shape2D {
   constructor(vertices: Vertex[], gl: WebGLRenderingContext, filled: boolean) {

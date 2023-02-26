@@ -21,6 +21,7 @@ const FEATURE_MODES = {
   General: "General",
   Translasi: "Translasi",
   Dilatasi: "Dilatasi",
+  ConstraintMoveVertex: "ConstraintMoveVertex",
 } as const;
 
 type FEATURE_MODE_TYPES = typeof FEATURE_MODES[keyof typeof FEATURE_MODES];

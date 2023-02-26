@@ -21,7 +21,7 @@ const createShape = (x_awal: number, y_awal: number, x: number, y: number, gl: W
     const vertex2 = new Vertex(x_awal, y, Color.fromHex(elmts.color_picker.value), gl);
     const vertex3 = new Vertex(x, y, Color.fromHex(elmts.color_picker.value), gl);
     const vertex4 = new Vertex(x, y_awal, Color.fromHex(elmts.color_picker.value), gl);
-    const square = new Square([vertex, vertex2, vertex3, vertex4], gl, elmts.fill_btn.checked);
+    const square = new Rectangle([vertex, vertex2, vertex3, vertex4], gl, elmts.fill_btn.checked);
 
     renderer.redraw(state, gl);
     if (isNewShape) {
@@ -78,7 +78,7 @@ const createShape = (x_awal: number, y_awal: number, x: number, y: number, gl: W
   }
 };
 
-const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRenderingContext) => {
+const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRenderingContext, handler: Handler) => {
   // Melakukan penghapusan seluruh objek yang telah dibuat
   elmts.clear_button.addEventListener("click", function (e) {
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
@@ -211,6 +211,11 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
 
   // Fungsi untuk menggambar poligon dengan menggunakan click click
   elmts.canvas.addEventListener("click", function (e) {
+    switch (elmts.featureModeSelect.value) {
+      case FEATURE_MODES.ConstraintMoveVertex:
+        return;
+    }
+
     let type = (<HTMLInputElement>document.getElementById("bentuk"))?.value;
 
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
@@ -291,6 +296,13 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
   });
 
   elmts.canvas.addEventListener("mousemove", function (e) {
+    switch (elmts.featureModeSelect.value) {
+      case FEATURE_MODES.ConstraintMoveVertex:
+        handler.constraintMoveVertex.onMouseMove(e);
+        return;
+    }
+
+
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
     let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
 
@@ -377,6 +389,12 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
 
   // Fungsi untuk menggambar bentuk dengan menggunakan drag, disini untuk pertama kali melakukan klik
   elmts.canvas.addEventListener("mousedown", function (e) {
+    switch (elmts.featureModeSelect.value) {
+      case FEATURE_MODES.ConstraintMoveVertex:
+        handler.constraintMoveVertex.onMouseDown(e);
+        return;
+    }
+
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
     let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
     state.x_awal = x; // Menyimpan posisi awal x
@@ -391,6 +409,12 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
 
   // Fungsi untuk menggambar bentuk dengan menggunakan drag, disini untuk terakhir kali menahan mouse (membangun bentuk)
   elmts.canvas.addEventListener("mouseup", function (e) {
+    switch (elmts.featureModeSelect.value) {
+      case FEATURE_MODES.ConstraintMoveVertex:
+        handler.constraintMoveVertex.onMouseUp(e);
+        return;
+    }
+
     state.is_clicked = false;
     let x = (e.offsetX / elmts.canvas.clientWidth) * 2 - 1;
     let y = (1 - e.offsetY / elmts.canvas.clientHeight) * 2 - 1;
@@ -411,7 +435,9 @@ const main = () => {
 
   const gl = renderer.createGLContext(elmts.canvas);
 
+  const handler = new Handler(elmts, state, gl);
+
   // Mulai dari sini ke bawah, merupakan bagian yang digunakan untuk fungsionalitas dari index.html
-  initListener(state, elmts, gl);
+  initListener(state, elmts, gl, handler);
 };
 window.onload = main;

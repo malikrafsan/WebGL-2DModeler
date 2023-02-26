@@ -146,3 +146,26 @@ function save(shapes: Shape2D[], filename: string) {
 const objKey = <T extends Object>(obj: T) => {
   return Object.keys(obj) as (keyof T)[];
 };
+
+const findShapeAndVertex = (x: number, y: number, state: WorldState) => {
+  for (let i = 0; i < state.shape.length; i++) {
+    for (let j = 0; j < state.shape[i].vertices.length; j++) {
+      const x1 = state.shape[i].vertices[j].x;
+      const y1 = state.shape[i].vertices[j].y;
+      // const jarak = calculateDist(x, y, x1, y1);
+
+      // console.log("jarak", jarak);
+
+      if (Math.abs(x-x1) < NEAR_POINT_THRESHOLD
+        && Math.abs(y-y1) < NEAR_POINT_THRESHOLD  
+      ) {
+        return {
+          shape: state.shape[i],
+          idxVertex: j,
+        };
+      }
+    }
+  }
+
+  return null;
+};

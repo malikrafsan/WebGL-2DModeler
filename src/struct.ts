@@ -1,3 +1,15 @@
+class FeatureState {
+  public selected_shape: Shape2D | null = null;
+  public idxVertex: number | null = null;
+  public idxRefVertex: number | null = null;
+
+  clear() {
+    this.selected_shape = null;
+    this.idxVertex = null;
+    this.idxRefVertex = null;
+  }
+}
+
 class WorldState {
   public shape: Shape2D[] = []; // Merupakan array untuk menyimpan daftar bentuk yang telah dibuat
   public polygon: Vertex[] = []; // Merupakan array untuk menyimpan sisi dari poligon yang telah diklik pengguna
@@ -14,6 +26,7 @@ class WorldState {
   public delete_selected = false;
   public add_selected = false;
   public featureMode: FEATURE_MODE_TYPES = FEATURE_MODES.General; // untuk mengetahui mode yang sedang aktif
+  public featureState: FeatureState = new FeatureState();
 }
 
 class ElementContainer {
@@ -95,5 +108,21 @@ class ElementContainer {
       option.innerText = key;
       this.featureModeSelect.appendChild(option);
     });
+  }
+}
+
+class Handler {
+  public readonly constraintMoveVertex: ConstraintMoveVertexHandler;
+
+  constructor(
+    elmts: ElementContainer,
+    state: WorldState,
+    gl: WebGLRenderingContext
+  ) {
+    this.constraintMoveVertex = new ConstraintMoveVertexHandler(
+      elmts,
+      state,
+      gl
+    );
   }
 }
