@@ -115,6 +115,7 @@ class Handler {
   public readonly constraintMoveVertex: ConstraintMoveVertexHandler;
   public readonly freeMoveVertex: FreeMoveVertexHandler;
   public readonly changeColorVertex: ChangeColorVertexHandler;
+  public readonly lockingVertexPosition: LockingVertexPositionHandler;
 
   constructor(
     elmts: ElementContainer,
@@ -128,5 +129,10 @@ class Handler {
     );
     this.freeMoveVertex = new FreeMoveVertexHandler(elmts, state, gl);
     this.changeColorVertex = new ChangeColorVertexHandler(elmts, state, gl);
+    this.lockingVertexPosition = new LockingVertexPositionHandler(
+      elmts,
+      state,
+      gl
+    );
   }
 }

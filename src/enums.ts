@@ -25,6 +25,7 @@ const FEATURE_MODES = {
   FreeMoveVertex: "FreeMoveVertex",
   ChangeColorVertex: "ChangeColorVertex",
   ChangeColorShape: "ChangeColorShape",
+  LockingVertexPosition: "LockingVertexPosition",
 } as const;
 
 type FEATURE_MODE_TYPES = typeof FEATURE_MODES[keyof typeof FEATURE_MODES];

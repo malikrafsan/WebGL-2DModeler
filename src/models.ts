@@ -46,26 +46,56 @@ class Color {
 class Vertex {
   protected static counter: number = 0;
 
-  public x: number;
-  public y: number;
+  public _x: number;
+  public _y: number;
   public c: Color;
   protected id: number;
   protected gl: WebGLRenderingContext;
+  protected isLocked: boolean;
 
   constructor(x: number, y: number, c: Color, gl: WebGLRenderingContext) {
     this.id = Vertex.counter++;
-    this.x = x;
-    this.y = y;
+    this._x = x;
+    this._y = y;
     this.c = c;
     this.gl = gl;
+    this.isLocked = false;
   }
 
   toArray(): number[] {
-    return [this.x, this.y, ...this.c.toArray()];
+    return [this._x, this._y, ...this.c.toArray()];
+  }
+
+  public get x(): number {
+    return this._x;
+  }
+
+  public set x(x: number) {
+    if (this.isLocked) {
+      return;
+    }
+
+    this._x = x;
+  }
+
+  public get y(): number {
+    return this._y;
+  }
+
+  public set y(y: number) {
+    if (this.isLocked) {
+      return;
+    }
+
+    this._y = y;
   }
 
   changeColor(c: Color) {
     this.c = c;
+  }
+
+  lockUnlock() {
+    this.isLocked = !this.isLocked;
   }
 }
 
