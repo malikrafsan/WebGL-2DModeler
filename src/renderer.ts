@@ -115,11 +115,11 @@ class Renderer {
           switch (elmts.featureModeSelect.value) {
             case FEATURE_MODES.ChangeColorShape:
               state.shape[state.id_clicked].changeColor(
-                Color.fromHex(elmts.color_picker.value),
+                Color.fromHex(elmts.color_picker.value)
               );
+              state.id_clicked = -1;
           }
 
-          state.id_clicked = -1;
           this.redraw(state, gl, elmts);
         };
         body.innerHTML = `${data.constructor.name} #${i+1}`;

@@ -127,7 +127,8 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
           // Membuat vertex baru berdasarkan data yang telah disimpan
           let vertex_result = result.map((data: any) => {
             let vertex_data = data.vertices.map((el: any) => {
-              return new Vertex(el.x, el.y, new Color(el.c.r, el.c.g, el.c.b), gl);
+              console.log(el);
+              return new Vertex(el._x, el._y, new Color(el._c.r, el._c.g, el._c.b), gl);
             });
             // Membuat shapes baru berdasarkan bentuk yang telah disimpan
             if (data.shape === "Square") {
