@@ -59,7 +59,7 @@ class ConstraintMoveVertexHandler implements FeatureHandler {
     const idxMovedVertex = this.state.featureState.idxVertex;
     const idxRefVertex = this.state.featureState.idxRefVertex;
 
-    if (!movedShape || !idxMovedVertex || !idxRefVertex) {
+    if (movedShape === null || idxMovedVertex === null || idxRefVertex === null) {
       return;
     }
 
@@ -183,7 +183,7 @@ class FreeMoveVertexHandler implements FeatureHandler {
     const movedShape = this.state.featureState.selected_shape;
     const idxMovedVertex = this.state.featureState.idxVertex;
 
-    if (!movedShape || !idxMovedVertex) {
+    if (movedShape === null || idxMovedVertex === null) {
       return;
     }
     const movedVertex = movedShape.vertices[idxMovedVertex];
