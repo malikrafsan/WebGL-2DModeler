@@ -23,7 +23,7 @@ const createShape = (x_awal: number, y_awal: number, x: number, y: number, gl: W
     const vertex4 = new Vertex(x, y_awal, Color.fromHex(elmts.color_picker.value), gl);
     const square = new Rectangle([vertex, vertex2, vertex3, vertex4], gl, elmts.fill_btn.checked);
 
-    renderer.redraw(state, gl);
+    renderer.redraw(state, gl, elmts);
     if (isNewShape) {
       state.shape.push(square);
       renderer.render(elmts, state, gl);
@@ -34,7 +34,7 @@ const createShape = (x_awal: number, y_awal: number, x: number, y: number, gl: W
     const vertex = new Vertex(x_awal, y_awal, Color.fromHex(elmts.color_picker.value), gl);
     const vertex2 = new Vertex(x, y, Color.fromHex(elmts.color_picker.value), gl);
     const line = new Line([vertex, vertex2], gl, elmts.fill_btn.checked);
-    renderer.redraw(state, gl);
+    renderer.redraw(state, gl, elmts);
     if (isNewShape) {
       state.shape.push(line);
       renderer.render(elmts, state, gl);
@@ -68,7 +68,7 @@ const createShape = (x_awal: number, y_awal: number, x: number, y: number, gl: W
     const vertex3 = new Vertex(x_res_index, y_res_index, Color.fromHex(elmts.color_picker.value), gl);
     const vertex4 = new Vertex(x_res_index, y_awal, Color.fromHex(elmts.color_picker.value), gl);
     const square = new Square([vertex, vertex2, vertex3, vertex4], gl, elmts.fill_btn.checked);
-    renderer.redraw(state, gl);
+    renderer.redraw(state, gl, elmts);
     if (isNewShape) {
       state.shape.push(square);
       renderer.render(elmts, state, gl);
@@ -142,7 +142,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
           });
           state.shape = vertex_result;
           renderer.render(elmts, state, gl);
-          renderer.redraw(state, gl);
+          renderer.redraw(state, gl, elmts);
         };
         elmts.file_name_span!.textContent = file[0].name;
       }
@@ -163,7 +163,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
       renderer.render(elmts, state, gl);
       state.polygon = [];
       state.n_sisi = 0;
-      renderer.redraw(state, gl);
+      renderer.redraw(state, gl, elmts);
     }
     if (elmts.type_button.value === SHAPE_TYPE.POLIGON) {
       // menambahkan button untuk bantu proses penggambaran ke dokumen html
@@ -193,7 +193,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
             renderer.render(elmts, state, gl);
             state.polygon = [];
             state.n_sisi = 0;
-            renderer.redraw(state, gl);
+            renderer.redraw(state, gl, elmts);
           } else {
             state.polygon = [];
           }
@@ -213,7 +213,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
             renderer.render(elmts, state, gl);
             state.polygon = [];
             state.n_sisi = 0;
-            renderer.redraw(state, gl);
+            renderer.redraw(state, gl, elmts);
           } else {
             state.polygon = [];
           }
@@ -279,7 +279,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
               state.shape.splice(state.shape.indexOf(state.selected), 1);
               renderer.render(elmts, state, gl);
             }
-            renderer.redraw(state, gl);
+            renderer.redraw(state, gl, elmts);
           }
         } else if (state.add_selected == true && state.polygon.length == 0) {
           let polygon_shape = filterShape(state, "Polygon");
@@ -309,7 +309,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
                 state.shape.splice(state.shape.indexOf(found_nearest.shape), 1);
                 state.shape.push(poligon);
                 renderer.render(elmts, state, gl);
-                renderer.redraw(state, gl);
+                renderer.redraw(state, gl, elmts);
               }
             }
           }
@@ -317,12 +317,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
           let vertex = new Vertex(x, y, Color.fromHex(elmts.color_picker.value), gl); // Menggambar sisi poligon
           state.polygon.push(vertex); // Mempush sisi ke array berisi daftar sisi poligon
           state.n_sisi += 1;
-          if (state.n_sisi > 2) {
-            // Jika sisi sudah lebih dari dua, dilakukan draw poligon
-            let poligon = new Polygon(state.polygon, gl, elmts.fill_btn.checked);
-            poligon.convexHull();
-            poligon.draw();
-          }
+          renderer.redraw(state, gl, elmts);
         }
       }
     } else {
@@ -330,7 +325,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
       if (state.saver_tranformation_shape) {
         state.shape[state.id_clicked] = state.saver_tranformation_shape;
         state.id_clicked = -1;
-        renderer.redraw(state, gl);
+        renderer.redraw(state, gl, elmts);
       }
     }
   });
@@ -343,14 +338,12 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
     if (!found) {
       elmts.canvas.style.cursor = "default";
       state.circle = null;
-      renderer.redraw(state, gl);
+      renderer.redraw(state, gl, elmts);
     } else {
       elmts.canvas.style.cursor = "pointer";
       const vc = found.vertex.c;
-
       state.circle = new Circle(x, y, gl, vc.flipColor());
-      console.log(state.circle);
-      renderer.redraw(state, gl);
+      renderer.redraw(state, gl, elmts);
     }
 
     switch (elmts.featureModeSelect.value) {
@@ -402,13 +395,13 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
         let lingkaran = new Circle(x, y, gl, new Color(0.5, 0.5, 0.5));
         state.counter++;
         state.shape.push(lingkaran);
-        renderer.redraw(state, gl);
+        renderer.redraw(state, gl, elmts);
         state.selected = findMatch;
       } else {
         if (state.counter !== 0) {
           state.shape.pop();
           state.counter--;
-          renderer.redraw(state, gl);
+          renderer.redraw(state, gl, elmts);
         }
       }
     } else if (state.id_clicked === -1 && state.is_clicked) {
@@ -539,7 +532,7 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
       createShape(state.x_awal, state.y_awal, x, y, gl, true, elmts, state);
 
       // Bagian untuk menghapus isi canvas dan melakukan draw ulang semua bentuk yang disimpan pada array shape
-      renderer.redraw(state, gl);
+      renderer.redraw(state, gl, elmts);
     }
   });
 };

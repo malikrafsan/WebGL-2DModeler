@@ -119,7 +119,7 @@ class Renderer {
               )
           }
 
-          this.redraw(state, gl);
+          this.redraw(state, gl, elmts);
         };
         body.innerHTML = `${data.constructor.name} #${i+1}`;
         body.setAttribute("objId", i.toString());
@@ -133,7 +133,7 @@ class Renderer {
   }
 
   // Fungsi untuk melakukan gambar ulang, parameter yang diminta adalah gl
-  public redraw(state: WorldState, gl: WebGLRenderingContext) {
+  public redraw(state: WorldState, gl: WebGLRenderingContext, elmts: ElementContainer) {
     gl.clearColor(1.0, 1.0, 1.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     for (let i = 0; i < state.shape.length; i++) {
@@ -143,6 +143,17 @@ class Renderer {
     if (state.circle) {
       console.log("circle");
       state.circle.draw();
+    }
+
+    if (state.n_sisi > 2) {
+      // Jika sisi sudah lebih dari dua, dilakukan draw poligon
+      let poligon = new Polygon(
+        state.polygon,
+        gl,
+        elmts.fill_btn.checked
+      );
+      poligon.convexHull();
+      poligon.draw();
     }
   }
 }
