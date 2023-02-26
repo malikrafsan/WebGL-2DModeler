@@ -296,8 +296,6 @@ const initListener = (state: WorldState, elmts: ElementContainer, gl: WebGLRende
                     }
                   }
                 }
-                console.log(newPoligon);
-                console.log(newPoligon.length);
                 let poligon = new Polygon(newPoligon, gl, elmts.fill_btn.checked);
                 poligon.convexHull();
                 state.shape.splice(state.shape.indexOf(found_nearest.shape), 1);
